@@ -1,12 +1,13 @@
 import { Helmet } from "react-helmet-async";
+import SignUp from "../sections/auth/signup";
 
-export default function Signup() {
+export default function SignUpPage() {
   return (
     <>
       <Helmet>
         <title>Signup</title>
       </Helmet>
-      <h1>Signup</h1>
+      <SignUp />
     </>
   );
 }

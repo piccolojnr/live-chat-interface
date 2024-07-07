@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import UserProfile from "../sections/user-profile";
 
 export default function ProfilePage() {
   return (
@@ -6,7 +7,7 @@ export default function ProfilePage() {
       <Helmet>
         <title>Profile</title>
       </Helmet>
-      <h1>Profile</h1>
+      <UserProfile />
     </>
   );
 }
