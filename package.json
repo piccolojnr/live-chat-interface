@@ -53,6 +53,7 @@
     ]
   },
   "devDependencies": {
+    "@iconify/react": "^5.0.1",
     "@types/chroma-js": "^2.4.4"
   }
 }

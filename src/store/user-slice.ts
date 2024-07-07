@@ -1,20 +1,25 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
+import { IUser } from '../types';
+import { faker } from '@faker-js/faker';
+import { users } from '../_moke/users';
+import { account } from '../_moke/account';
 interface UserState {
     isAuthenticated: boolean;
-    userInfo: { id: string; username: string } | null;
+    userInfo: IUser | null;
+    allUsers: IUser[];
 }
 
 const initialState: UserState = {
     isAuthenticated: false,
-    userInfo: null,
+    userInfo: account,
+    allUsers: users,
 };
 
 const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        login: (state, action: PayloadAction<{ id: string; username: string }>) => {
+        login: (state, action: PayloadAction<IUser>) => {
             state.isAuthenticated = true;
             state.userInfo = action.payload;
         },

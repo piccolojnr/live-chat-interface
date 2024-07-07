@@ -1,22 +1,10 @@
-import {
-  alpha,
-  Avatar,
-  Box,
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Stack,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { alpha, Avatar, Box, Drawer, Typography } from "@mui/material";
 import { useResponsive } from "../hooks/use-responsive";
 import { SIDEBAR } from "./config-layout";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
-import RouterLink from "../routes/components/router-link";
-import { IChat } from "../types";
+import Scrollbar from "../components/scrolbar";
+import SearchTabs from "./common/search-tabs";
 
 export default function Sidebar({
   openSidebar,
@@ -25,29 +13,48 @@ export default function Sidebar({
   openSidebar: boolean;
   onCloseSidebar: () => void;
 }) {
-  const chats = useSelector((state: RootState) => state.chat.chats);
   const mdUp = useResponsive("up", "md");
-  const renderChatList = (
-    <Stack
-      spacing={0.5}
+  const account = useSelector((state: RootState) => state.user.userInfo);
+
+  const renderAccount = (
+    <Box
       sx={{
-        px: 2,
+        my: 3,
+        mx: 2.5,
+        py: 2,
+        px: 2.5,
+        display: "flex",
+        borderRadius: 1.5,
+        alignItems: "center",
+        bgcolor: (theme) => alpha(theme.palette.grey[500], 0.12),
       }}
     >
-      {chats.map((chat) => (
-        <ChatItem key={chat.id} chat={chat} />
-      ))}
-    </Stack>
-  );
-  const drawerContent = (
-    <div>
-      <Toolbar>
-        <Typography variant="h6" noWrap>
-          Chats
+      <Avatar src={account?.profilePicture} alt="photoURL" />
+      <Box sx={{ ml: 2 }}>
+        <Typography variant="subtitle2">{account?.username}</Typography>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{
+            display: "-webkit-box",
+            overflow: "hidden",
+            WebkitBoxOrient: "vertical",
+            WebkitLineClamp: 1,
+            textOverflow: "ellipsis",
+            fontSize: 10,
+          }}
+        >
+          {account?.email}
         </Typography>
-      </Toolbar>
-      {renderChatList}
-    </div>
+      </Box>
+    </Box>
+  );
+
+  const drawerContent = (
+    <Scrollbar>
+      {renderAccount}
+      <SearchTabs />
+    </Scrollbar>
   );
 
   if (mdUp) {
@@ -89,84 +96,5 @@ export default function Sidebar({
     >
       {drawerContent}
     </Drawer>
-  );
-}
-
-function ChatItem({ chat }: { chat: IChat }) {
-  const activeChat = useSelector((state: RootState) => state.chat.activeChatId);
-  const active = activeChat === chat.id;
-  return (
-    <ListItemButton
-      component={RouterLink}
-      href={`/chat/${chat.id}`}
-      sx={{
-        minHeight: 44,
-        borderRadius: 0.75,
-        typography: "body2",
-        color: "text.secondary",
-        textTransform: "capitalize",
-        fontWeight: "fontWeightMedium",
-        ...(active
-          ? {
-              color: "primary.main",
-              fontWeight: "fontWeightSemiBold",
-              bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
-              "&:hover": {
-                bgcolor: (theme) => alpha(theme.palette.primary.main, 0.16),
-              },
-            }
-          : {}),
-        width: "100%",
-        bgcolor: (theme) =>
-          active
-            ? alpha(theme.palette.primary.main, 0.08)
-            : alpha(theme.palette.grey[200], 0.12),
-        "&:hover": {
-          bgcolor: (theme) =>
-            active
-              ? alpha(theme.palette.primary.main, 0.16)
-              : alpha(theme.palette.grey[500], 0.24),
-        },
-      }}
-    >
-      <Box component="span" sx={{ width: 24, height: 24, mr: 2 }}>
-        <Avatar
-          sx={{
-            width: 20,
-            height: 20,
-            mr: 2,
-          }}
-          src={chat.participants[0].profilePicture}
-          alt="photoUrl"
-        />
-      </Box>
-      <Box component="span">
-        <Typography
-          variant="subtitle2"
-          sx={{
-            display: "-webkit-box",
-            overflow: "hidden",
-            WebkitBoxOrient: "vertical",
-            WebkitLineClamp: 1,
-          }}
-        >
-          {chat.participants[0].username}
-        </Typography>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{
-            fontSize: 12,
-            display: "-webkit-box",
-            overflow: "hidden",
-            WebkitBoxOrient: "vertical",
-            WebkitLineClamp: 2,
-          }}
-          lineHeight={1.25}
-        >
-          {chat.lastMessage.message}
-        </Typography>
-      </Box>
-    </ListItemButton>
   );
 }

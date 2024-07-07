@@ -9,13 +9,17 @@ export interface IMessage {
 
 export interface IChat {
     id: string;
+    name?: string;
     participants: Pick<IUser, "id" | "username" | "profilePicture">[];
-    lastMessage: IMessage;
+    lastMessage?: IMessage;
+    type?: "private" | "group";
+    avatar?: string;
 }
 
-interface IUser {
+export interface IUser {
     id: string;
     username: string;
+    email: string;
     phone?: string;
     profilePicture?: string;
 }
