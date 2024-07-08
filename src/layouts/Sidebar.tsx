@@ -1,10 +1,18 @@
-import { alpha, Avatar, Box, Drawer, Typography } from "@mui/material";
+import {
+  alpha,
+  Avatar,
+  Box,
+  Drawer,
+  IconButton,
+  Typography,
+} from "@mui/material";
 import { useResponsive } from "../hooks/use-responsive";
 import { SIDEBAR } from "./config-layout";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import Scrollbar from "../components/scrolbar";
 import SearchTabs from "./common/search-tabs";
+import Iconify from "../components/iconify";
 
 export default function Sidebar({
   openSidebar,
@@ -51,7 +59,11 @@ export default function Sidebar({
   );
 
   const drawerContent = (
-    <Scrollbar>
+    <Scrollbar
+      sx={{
+        bgcolor: "background.paper",
+      }}
+    >
       {renderAccount}
       <SearchTabs />
     </Scrollbar>
@@ -91,9 +103,23 @@ export default function Sidebar({
         [`& .MuiDrawer-paper`]: {
           width: SIDEBAR.WIDTH,
           boxSizing: "border-box",
+          "& scrollbar": {
+            display: "none",
+          },
         },
       }}
     >
+      <IconButton
+        onClick={onCloseSidebar}
+        sx={{
+          position: "absolute",
+          top: 1,
+          right: 1,
+        }}
+      >
+        <Iconify icon="bi:arrow-left" />
+      </IconButton>
+
       {drawerContent}
     </Drawer>
   );

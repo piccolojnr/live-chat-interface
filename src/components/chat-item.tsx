@@ -1,8 +1,16 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import { IChat, IUser } from "../types";
-import { alpha, Avatar, Box, ListItemButton, Typography } from "@mui/material";
-import RouterLink from "../routes/components/router-link";
+import { IChat } from "../types";
+import {
+  alpha,
+  Avatar,
+  Box,
+  Button,
+  ListItemButton,
+  Typography,
+} from "@mui/material";
+import { useLocation, useNavigate } from "react-router-dom";
+import { setActiveChat } from "../store/chat-slice";
 
 function ChatItem({ chat }: { chat: IChat }) {
   const account = useSelector((state: RootState) => state.user.userInfo);
@@ -15,11 +23,25 @@ function ChatItem({ chat }: { chat: IChat }) {
       ? chat.participants[1]
       : chat.participants[0];
   const avatar = chat.type === "group" ? chat.avatar : user?.profilePicture;
+  const navigate = useNavigate();
+  const path = `/chat/${chat.id}`;
+  const location = useLocation();
+  const dispatch = useDispatch();
+
+  const handleClick = () => {
+    if (location.pathname !== path) {
+      dispatch(setActiveChat(chat.id));
+      navigate(path);
+    } else {
+      dispatch(setActiveChat(null));
+      navigate("/chat");
+    }
+  };
 
   return (
     <ListItemButton
-      component={RouterLink}
-      href={`/chat/${chat.id}`}
+      component={Button}
+      onClick={handleClick}
       sx={{
         minHeight: 44,
         borderRadius: 0.75,

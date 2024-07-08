@@ -5,6 +5,7 @@ import Layout from "../layouts";
 export const MainPage = lazy(() => import("../pages/index"));
 export const ChatPage = lazy(() => import("../pages/chat"));
 export const ProfilePage = lazy(() => import("../pages/profile"));
+export const OverviewPage = lazy(() => import("../pages/overview"));
 export const LoginPage = lazy(() => import("../pages/login"));
 export const SignupPage = lazy(() => import("../pages/signup"));
 export const Page404 = lazy(() => import("../pages/page-not-found"));
@@ -34,6 +35,10 @@ export default function Routes() {
         {
           element: <ChatPage />,
           path: "chat/:id",
+        },
+        {
+          element: <OverviewPage />,
+          path: "chat/:id/overview",
         },
         {
           element: <ProfilePage />,

@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IUser } from '../types';
-import { faker } from '@faker-js/faker';
 import { users } from '../_moke/users';
 import { account } from '../_moke/account';
 interface UserState {

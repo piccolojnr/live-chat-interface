@@ -1,12 +1,13 @@
 import { Helmet } from "react-helmet-async";
+import EmptyChat from "../sections/chat-room/empty-chat";
 
 export default function MainPage() {
   return (
     <>
       <Helmet>
-        <title>Home</title>
+        <title>Chat</title>
       </Helmet>
-      <h1>Home</h1>
+      <EmptyChat />
     </>
   );
 }

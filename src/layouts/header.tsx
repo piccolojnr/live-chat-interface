@@ -11,12 +11,16 @@ import { useTheme } from "../theme";
 import { bgBlur } from "../theme/css";
 import { HEADER, SIDEBAR } from "./config-layout";
 import { useResponsive } from "../hooks/use-responsive";
-import { ChatTwoTone } from "@mui/icons-material";
 import AcountPopover from "./common/account-popover";
+import Iconify from "../components/iconify";
+import { useLocation, useParams } from "react-router-dom";
+import RouterLink from "../routes/components/router-link";
 
 function Header({ onOpenSidebar }: { onOpenSidebar: () => void }) {
   const { theme } = useTheme();
   const mdUp = useResponsive("up", "md");
+  const location = useLocation();
+  const params = useParams();
   return (
     <>
       <AppBar
@@ -49,9 +53,23 @@ function Header({ onOpenSidebar }: { onOpenSidebar: () => void }) {
               onClick={onOpenSidebar}
               sx={{ display: { md: "none" } }}
             >
-              <ChatTwoTone />
+              <Iconify
+                icon="bi:justify-left"
+                sx={{ color: theme.palette.text.primary }}
+              />
             </IconButton>
-
+            {location.pathname === `/chat/${params.id}/overview` && (
+              <IconButton
+                LinkComponent={RouterLink}
+                href={`/chat/${params.id}/`}
+              >
+                <Iconify
+                  // chevron
+                  icon="bi:chevron-left"
+                  sx={{ color: theme.palette.text.primary }}
+                />
+              </IconButton>
+            )}
             <Typography
               variant="h6"
               sx={{ flexGrow: 1, color: theme.palette.text.primary }}

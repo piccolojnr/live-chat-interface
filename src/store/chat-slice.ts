@@ -16,7 +16,7 @@ const chatSlice = createSlice({
     name: 'chat',
     initialState,
     reducers: {
-        setActiveChat: (state, action: PayloadAction<string>) => {
+        setActiveChat: (state, action: PayloadAction<string | null>) => {
             state.activeChatId = action.payload;
         },
         addChat: (state, action: PayloadAction<IChat>) => {

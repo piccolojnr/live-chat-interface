@@ -1,13 +1,14 @@
-import { Helmet } from "react-helmet-async";
-import ChatRoom from "../sections/chat-room";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
+import { Helmet } from "react-helmet-async";
 import { getChatName } from "../utils/functions";
+import ChatOverview from "../sections/user-profile/chat-overvew";
+import { CircularProgress } from "@mui/material";
 import { useParams } from "react-router-dom";
-import { setActiveChat } from "../store/chat-slice";
 import { useEffect } from "react";
+import { setActiveChat } from "../store/chat-slice";
 
-export default function ChatPage() {
+export default function OverviewPage() {
   const params = useParams();
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.user.userInfo);
@@ -24,9 +25,13 @@ export default function ChatPage() {
   return (
     <>
       <Helmet>
-        <title>Chat - {getChatName(activeChat, currentUser)}</title>
+        <title>Overview | {getChatName(activeChat, currentUser)}</title>
       </Helmet>
-      <ChatRoom />
+      {activeChat ? (
+        <ChatOverview chat={activeChat} />
+      ) : (
+        <CircularProgress sx={{ display: "block", margin: "auto" }} />
+      )}
     </>
   );
 }
