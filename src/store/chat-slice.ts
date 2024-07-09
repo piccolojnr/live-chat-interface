@@ -9,7 +9,7 @@ interface ChatState {
 
 const initialState: ChatState = {
     activeChatId: null,
-    chats: chats,
+    chats: [],
 };
 
 const chatSlice = createSlice({
