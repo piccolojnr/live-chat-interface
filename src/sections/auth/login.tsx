@@ -55,7 +55,9 @@ const Login: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(login({ username, password }));
+    dispatch(login({ username, password, rememberMe })).catch((error) => {
+      setError({ ...error, submit: error.message });
+    });
   };
 
   if (isAuthenticated) {
@@ -160,26 +162,26 @@ const Login: React.FC = () => {
       }}
     >
       {/* home button */}
-      {isAuthenticated && (
-        <Box
+      {/* {isAuthenticated && ( */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          m: 3,
+        }}
+        onClick={() => navigate("/")}
+      >
+        <Iconify
+          icon="fluent:home-20-filled"
           sx={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            m: 3,
+            color: theme.palette.primary.main,
+            fontSize: 32,
+            cursor: "pointer",
           }}
-          onClick={() => navigate("/")}
-        >
-          <Iconify
-            icon="fluent:home-20-filled"
-            sx={{
-              color: theme.palette.primary.main,
-              fontSize: 32,
-              cursor: "pointer",
-            }}
-          />
-        </Box>
-      )}
+        />
+      </Box>
+      {/* )} */}
 
       <Stack alignItems="center" justifyContent="center" sx={{ height: 1 }}>
         <Card

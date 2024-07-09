@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Outlet, useRoutes } from "react-router-dom";
 import Layout from "../layouts";
+import ProtectedRoute from "./protected-route";
 
 export const MainPage = lazy(() => import("../pages/index"));
 export const ChatPage = lazy(() => import("../pages/chat"));
@@ -19,7 +20,9 @@ export default function Routes() {
       element: (
         <Suspense>
           <Layout>
-            <Outlet />
+            <ProtectedRoute>
+              <Outlet />
+            </ProtectedRoute>
           </Layout>
         </Suspense>
       ),
