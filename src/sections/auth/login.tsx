@@ -71,7 +71,7 @@ const Login: React.FC = () => {
           value={username}
           onChange={handleUpdateEmail}
           name="username"
-          label="Email address"
+          label="Email address/Username"
           error={Boolean(error.username)}
           helperText={error.username}
         />
@@ -133,6 +133,19 @@ const Login: React.FC = () => {
       >
         Login
       </LoadingButton>
+
+      <Divider sx={{ my: 3 }}></Divider>
+
+      <Typography variant="subtitle2" color="text.secondary" textAlign={'center'}>
+        Don't have an account?{" "}
+        <Link
+          onClick={() => navigate("/signup")}
+          variant="subtitle2"
+          underline="hover"
+        >
+          Sign up
+        </Link>
+      </Typography>
 
       <Stack direction="row" alignItems="center" justifyContent="center">
         <Typography
