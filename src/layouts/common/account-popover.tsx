@@ -1,5 +1,4 @@
 import {
-  alpha,
   Box,
   Divider,
   IconButton,
@@ -15,11 +14,6 @@ import { useNavigate } from "react-router-dom";
 import { logout } from "../../store/user-slice";
 
 const MENU_OPTIONS = [
-  {
-    label: "Home",
-    icon: "eva:home-fill",
-    path: "/",
-  },
   {
     label: "Profile",
     icon: "eva:person-fill",
@@ -43,7 +37,9 @@ export default function AcountPopover() {
   };
 
   const handleClose = (e: any, path: string) => {
-    navigate(path);
+    if (path !== "#" && MENU_OPTIONS.find((option) => option.path === path)) {
+      navigate(path);
+    }
     setOpen(null);
   };
 
@@ -52,21 +48,8 @@ export default function AcountPopover() {
   };
   return (
     <>
-      <IconButton
-        onClick={handleOpen}
-        sx={{
-          width: 40,
-          height: 40,
-          background: (theme) => alpha(theme.palette.common.white, 0.1),
-          ...(false
-            ? {
-                background: (theme) =>
-                  `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
-              }
-            : {}),
-        }}
-      >
-        <Iconify icon="lets:chevron-down" />
+      <IconButton onClick={handleOpen}>
+        <Iconify icon="eva:person-fill" />
       </IconButton>
 
       <Popover

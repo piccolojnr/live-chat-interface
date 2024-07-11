@@ -1,26 +1,27 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { RootState, AppDispatch } from "../../store";
 import {
   TextField,
   Typography,
-  Box,
   Stack,
-  Card,
   Divider,
+  Button,
+  Grid,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import Logo from "../../components/logo";
 import { updateProfile } from "../../store/user-slice";
 import InputFileUpload from "../../components/input-file-upload";
 import { IUser } from "../../types";
+import AppModal from "../../components/app-modal";
 
 interface ProfileSetupProps {
   user: IUser | null;
 }
 const ProfileSetup: React.FC<ProfileSetupProps> = ({ user }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
   const { isAuthenticated } = useSelector((state: RootState) => state.user);
   const [bio, setBio] = useState<string>(user?.bio || "");
@@ -74,11 +75,16 @@ const ProfileSetup: React.FC<ProfileSetupProps> = ({ user }) => {
     setLoading(true);
     try {
       await dispatch(updateProfile({ profilePicture, bio })).unwrap();
+      handleClose();
     } catch (error: any) {
       setError((prevError) => ({ ...prevError, submit: error.message }));
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleClose = () => {
+    navigate("/");
   };
 
   if (!isAuthenticated) {
@@ -101,19 +107,51 @@ const ProfileSetup: React.FC<ProfileSetupProps> = ({ user }) => {
           error={Boolean(error.bio)}
           helperText={error.bio}
         />
-
-        <LoadingButton
-          fullWidth
-          size="large"
-          type="submit"
-          variant="contained"
-          color="inherit"
-          disabled={loading}
-          loading={loading}
+        <Stack direction="row" alignItems="center" justifyContent="center">
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+              mt: 1,
+            }}
+          >
+            Profile Picture and Bio are optional
+          </Typography>
+        </Stack>
+        <Grid
+          container
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
         >
-          Complete Profile
-        </LoadingButton>
-
+          <Grid
+            item
+            sx={{
+              mr: 1,
+            }}
+          >
+            <Button variant="outlined" color="inherit" onClick={() => {}}>
+              Skip
+            </Button>
+          </Grid>
+          <Grid
+            item
+            sx={{
+              ml: 1,
+            }}
+          >
+            <LoadingButton
+              fullWidth
+              size="large"
+              type="submit"
+              variant="contained"
+              disabled={loading}
+              loading={loading}
+            >
+              Complete Profile
+            </LoadingButton>
+          </Grid>
+        </Grid>
         <Stack direction="row" alignItems="center" justifyContent="center">
           <Typography
             variant="subtitle2"
@@ -130,40 +168,15 @@ const ProfileSetup: React.FC<ProfileSetupProps> = ({ user }) => {
   );
 
   return (
-    <Box
-      sx={{
-        height: "100vh",
-        width: "100vw",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Logo
-        sx={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          m: 3,
-        }}
-      />
+    <AppModal open={true} handleClose={handleClose}>
+      <>
+        <Typography variant="h4">Complete Profile</Typography>
 
-      <Stack alignItems="center" justifyContent="center" sx={{ height: 1 }}>
-        <Card
-          sx={{
-            p: 5,
-            width: 1,
-            maxWidth: 420,
-          }}
-        >
-          <Typography variant="h4">Complete Profile</Typography>
+        <Divider sx={{ my: 3 }}></Divider>
 
-          <Divider sx={{ my: 3 }}></Divider>
-
-          {renderForm}
-        </Card>
-      </Stack>
-    </Box>
+        {renderForm}
+      </>
+    </AppModal>
   );
 };
 
