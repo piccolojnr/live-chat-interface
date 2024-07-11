@@ -20,7 +20,7 @@ export default function ProtectedRoute({
     if (!isAuthenticated) {
       dispatch(fetchUser()).then((response) => {
         if (fetchUser.rejected.match(response)) {
-          navigate("/not-authorized"); // Redirect to login page if authentication fails
+          navigate("/login"); // Redirect to login page if authentication fails
         }
       });
     }
