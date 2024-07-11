@@ -14,6 +14,7 @@ import {
   alpha,
   Card,
   Divider,
+  Grid,
 } from "@mui/material";
 import Iconify from "../../components/iconify";
 import { LoadingButton } from "@mui/lab";
@@ -22,22 +23,49 @@ import { useTheme } from "../../theme";
 import Logo from "../../components/logo";
 import RouterLink from "../../routes/components/router-link";
 
+const validatePhone = (phone: string) => {
+  if (!/^\d{10}$/.test(phone)) {
+    return "Invalid phone number.";
+  }
+};
+
+const validateCountryCode = (countryCode: string) => {
+  if (!/^\+\d{1,4}$/.test(countryCode)) {
+    return "Invalid country code.";
+  }
+};
+
+const validatePassword = (password: string) => {
+  if (password.length < 8) {
+    return "Password must be at least 8 characters long.";
+  }
+};
+
+const validateUsername = (username: string) => {
+  if (username.length < 6) {
+    return "Username must be at least 6 characters long.";
+  }
+};
+
 const Signup: React.FC = () => {
   const { theme } = useTheme();
   const dispatch = useDispatch<AppDispatch>();
 
   const { isAuthenticated } = useSelector((state: RootState) => state.user);
   const [username, setUsername] = useState<string>("");
-  const [phone, setPhone] = useState<string | null>(null);
+  const [countryCode, setCountryCode] = useState<string>("+233");
+  const [phone, setPhone] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<{
     username: string | null;
     phone: string | null;
+    country: string | null;
     password: string | null;
     submit: string | null;
   }>({
     username: null,
     phone: null,
+    country: null,
     password: null,
     submit: null,
   });
@@ -56,30 +84,33 @@ const Signup: React.FC = () => {
     let isValid = true;
 
     // username validation
-    if (username.length < 6) {
-      setError((prevError) => ({
-        ...prevError,
-        username: "Username must be at least 6 characters long.",
-      }));
+    const usernameError = validateUsername(username);
+    if (usernameError) {
+      setError((prevError) => ({ ...prevError, username: usernameError }));
       isValid = false;
     }
 
     // password validation
-    if (password.length < 8) {
-      setError((prevError) => ({
-        ...prevError,
-        password: "Password must be at least 8 characters long.",
-      }));
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      setError((prevError) => ({ ...prevError, password: passwordError }));
+      isValid = false;
+    }
+
+    // country code validation
+    const countryCodeError = validateCountryCode(countryCode);
+    if (countryCodeError) {
+      setError((prevError) => ({ ...prevError, country: countryCodeError }));
       isValid = false;
     }
 
     // phone validation (assuming phone is optional but must be numeric if provided)
-    if (phone && !/^\d+$/.test(phone)) {
-      setError((prevError) => ({
-        ...prevError,
-        phone: "Phone number must be numeric.",
-      }));
-      isValid = false;
+    if (phone.length > 0) {
+      const phoneError = validatePhone(phone);
+      if (phoneError) {
+        setError((prevError) => ({ ...prevError, phone: phoneError }));
+        isValid = false;
+      }
     }
 
     return isValid;
@@ -92,7 +123,13 @@ const Signup: React.FC = () => {
     setLoading(true);
     try {
       await dispatch(
-        register({ username, password, phone, bio: null, profilePicture: null })
+        register({
+          username,
+          password,
+          phone: countryCode + phone,
+          bio: null,
+          profilePicture: null,
+        })
       ).unwrap();
     } catch (error: any) {
       setError((prevError) => ({ ...prevError, submit: error.message }));
@@ -102,7 +139,7 @@ const Signup: React.FC = () => {
   };
 
   if (isAuthenticated) {
-    return <Navigate to="/profile-setup" />;
+    return <Navigate to="/complete-profile" />;
   }
 
   const renderForm = (
@@ -117,17 +154,31 @@ const Signup: React.FC = () => {
           error={Boolean(error.username)}
           helperText={error.username}
         />
-
-        <TextField
-          onFocus={() => setError({ ...error, phone: null })}
-          value={phone}
-          type="number"
-          onChange={(e) => setPhone(e.target.value)}
-          name="phone"
-          label="Phone"
-          error={Boolean(error.phone)}
-          helperText={error.phone}
-        />
+        <Grid container direction="row" wrap="nowrap">
+          <Grid item xs={4} mr={1}>
+            <TextField
+              onFocus={() => setError({ ...error, phone: null })}
+              value={countryCode}
+              onChange={(e) => setCountryCode(e.target.value)}
+              name="countryCode"
+              label="Country Code"
+              error={Boolean(error.phone)}
+              helperText={error.phone}
+            />
+          </Grid>
+          <Grid item xs={8}>
+            <TextField
+              onFocus={() => setError({ ...error, phone: null })}
+              value={phone}
+              type="tel"
+              onChange={(e) => setPhone(e.target.value)}
+              name="phone"
+              label="Phone"
+              error={Boolean(error.phone)}
+              helperText={error.phone}
+            />
+          </Grid>
+        </Grid>
 
         <TextField
           onFocus={() => setError({ ...error, password: null })}
@@ -159,7 +210,6 @@ const Signup: React.FC = () => {
           size="large"
           type="submit"
           variant="contained"
-          color="inherit"
           disabled={loading}
           loading={loading}
         >

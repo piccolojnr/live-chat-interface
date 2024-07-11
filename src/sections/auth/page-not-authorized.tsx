@@ -9,7 +9,7 @@ const PageNotAuthorized: React.FC = () => {
     <Container maxWidth="sm">
       <Box
         component={RouterLink}
-        href="/"
+        href="/login"
         sx={{
           position: "absolute",
           top: 0,
@@ -17,10 +17,11 @@ const PageNotAuthorized: React.FC = () => {
           m: 3,
         }}
       >
-        {/* login */}
         <Iconify
-          icon="lets:user"
+          // login icon
+          icon="mdi:login"
           sx={{
+            color: "primary.main",
             width: 32,
             height: 32,
           }}

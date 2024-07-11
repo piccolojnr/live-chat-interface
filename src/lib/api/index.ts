@@ -1,10 +1,9 @@
 import axios from 'axios';
 export const BASE_API_URL = 'http://localhost:5000/api';
-
+axios.defaults.withCredentials = true;
 
 export const API = axios.create({
-    baseURL: BASE_API_URL, withCredentials: true
-
+    baseURL: BASE_API_URL,
 });
 
 export const setBasicAuth = (username: string, password: string) => {
