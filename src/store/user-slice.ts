@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { IUser } from '../types';
 import {
     login as loginRequest,
-    logout as logoutRequest, getUser, register as registerRequest
+    logout as logoutRequest, getUser, register as registerRequest, updateProfile as updateProfileRequest
 } from '../lib/api/user';
 
 interface UserState {
@@ -58,9 +58,21 @@ export const fetchUser = createAsyncThunk(
 
 export const register = createAsyncThunk(
     'user/register',
-    async ({ username, email, password }: { username: string; email: string; password: string }, thunkAPI) => {
+    async ({ username, password, phone, profilePicture, bio }: { username: string; profilePicture: string | null; phone: string | null; bio: string | null; password: string }, thunkAPI) => {
         try {
-            const response = await registerRequest(username, email, password);
+            const response = await registerRequest(username, password, profilePicture, phone, bio);
+            return response;
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue(error.message || 'An error occurred');
+        }
+    }
+);
+
+export const updateProfile = createAsyncThunk(
+    'user/updateProfile',
+    async ({ profilePicture, bio }: { profilePicture: string | null; bio: string }, thunkAPI) => {
+        try {
+            const response = await updateProfileRequest(profilePicture, bio);
             return response;
         } catch (error: any) {
             return thunkAPI.rejectWithValue(error.message || 'An error occurred');

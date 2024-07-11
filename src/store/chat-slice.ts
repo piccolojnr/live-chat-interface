@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { chats } from '../_moke/chats';
 import { IChat } from '../types';
 
 interface ChatState {

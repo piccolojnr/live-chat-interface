@@ -1,41 +1,120 @@
-import { alpha, Avatar, IconButton } from "@mui/material";
+import {
+  alpha,
+  Box,
+  Divider,
+  IconButton,
+  MenuItem,
+  Popover,
+  Typography,
+} from "@mui/material";
 import { useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store";
-import RouterLink from "../../routes/components/router-link";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
+import Iconify from "../../components/iconify";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../../store/user-slice";
+
+const MENU_OPTIONS = [
+  {
+    label: "Home",
+    icon: "eva:home-fill",
+    path: "/",
+  },
+  {
+    label: "Profile",
+    icon: "eva:person-fill",
+    path: "#",
+  },
+  {
+    label: "Settings",
+    icon: "eva:settings-2-fill",
+    path: "#",
+  },
+];
 
 export default function AcountPopover() {
   const [open, setOpen] = useState(null);
-  const activeChat = useSelector((state: RootState) => state.chat.activeChatId);
+  const account = useSelector((state: RootState) => state.user.userInfo);
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
-  const handleOpen = (event: any) => {
-    setOpen(event.currentTarget);
+  const handleOpen = (e: any) => {
+    setOpen(e.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleClose = (e: any, path: string) => {
+    navigate(path);
     setOpen(null);
+  };
+
+  const handleLogout = async () => {
+    dispatch(logout()).catch((err) => console.error(err));
   };
   return (
     <>
-      {activeChat && (
-        <IconButton
-          LinkComponent={RouterLink}
-          href={`/chat/${activeChat}/overview`}
-          sx={{
-            width: 40,
-            height: 40,
-            background: (theme) => alpha(theme.palette.common.white, 0.1),
-            ...(false
-              ? {
-                  background: (theme) =>
-                    `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
-                }
-              : {}),
-          }}
+      <IconButton
+        onClick={handleOpen}
+        sx={{
+          width: 40,
+          height: 40,
+          background: (theme) => alpha(theme.palette.common.white, 0.1),
+          ...(false
+            ? {
+                background: (theme) =>
+                  `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+              }
+            : {}),
+        }}
+      >
+        <Iconify icon="lets:chevron-down" />
+      </IconButton>
+
+      <Popover
+        open={!!open}
+        anchorEl={open}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+        PaperProps={{
+          sx: {
+            p: 0,
+            mt: 1,
+            ml: 0.75,
+            width: 200,
+          },
+        }}
+      >
+        <Box sx={{ my: 1.5, px: 2 }}>
+          <Typography variant="subtitle2" noWrap>
+            {account?.username}
+          </Typography>
+          <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
+            {account?.email}
+          </Typography>
+        </Box>
+
+        <Divider sx={{ borderStyle: "dashed" }} />
+
+        {MENU_OPTIONS.map((option) => (
+          <MenuItem
+            key={option.label}
+            onClick={(e) => handleClose(e, option.path)}
+          >
+            {option.label}
+          </MenuItem>
+        ))}
+
+        <Divider sx={{ borderStyle: "dashed", m: 0 }} />
+
+        <MenuItem
+          disableRipple
+          disableTouchRipple
+          onClick={async () => await handleLogout()}
+          sx={{ typography: "body2", color: "error.main", py: 1.5 }}
         >
-          <Avatar alt="User" src="/static/images/avatars/avatar_6.png" />
-        </IconButton>
-      )}
+          Logout
+        </MenuItem>
+      </Popover>
     </>
   );
 }

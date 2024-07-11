@@ -7,6 +7,10 @@ export const MainPage = lazy(() => import("../pages/index"));
 export const ChatPage = lazy(() => import("../pages/chat"));
 export const ProfilePage = lazy(() => import("../pages/profile"));
 export const OverviewPage = lazy(() => import("../pages/overview"));
+export const CompleteProfilePage = lazy(
+  () => import("../pages/complete-profile")
+);
+export const SettingsPage = lazy(() => import("../pages/settings"));
 export const LoginPage = lazy(() => import("../pages/login"));
 export const SignupPage = lazy(() => import("../pages/signup"));
 export const Page404 = lazy(() => import("../pages/page-not-found"));
@@ -46,6 +50,14 @@ export default function Routes() {
         {
           element: <ProfilePage />,
           path: "profile",
+        },
+        {
+          element: <CompleteProfilePage />,
+          path: "complete-profile",
+        },
+        {
+          element: <SettingsPage />,
+          path: "settings",
         },
       ],
     },

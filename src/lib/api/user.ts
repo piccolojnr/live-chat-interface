@@ -12,8 +12,8 @@ export const logout = async () => {
     return response.data;
 }
 
-export const register = async (username: string, password: string, profilePicture?: string,
-    phone?: string, bio?: string
+export const register = async (username: string, password: string, profilePicture: string | null,
+    phone: string | null, bio: string | null
 ) => {
     const response = await API.post('/user', {
         username, password,
@@ -27,3 +27,7 @@ export const getUser = async () => {
     return response.data;
 }
 
+export const updateProfile = async (profilePicture: string | null, bio: string) => {
+    const response = await API.patch('/user/me', { profilePicture, bio });
+    return response.data;
+}

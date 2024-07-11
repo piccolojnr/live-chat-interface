@@ -25,7 +25,7 @@ const ChatBubble: React.FC<IMessage> = ({ message, sender, timestamp }) => {
         messageRef.current.scrollHeight > messageRef.current.clientHeight
       );
     }
-  }, [messageRef.current, message]);
+  }, [messageRef, message]);
 
   return (
     <ListItem

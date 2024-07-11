@@ -11,10 +11,10 @@ import { useTheme } from "../theme";
 import { bgBlur } from "../theme/css";
 import { HEADER, SIDEBAR } from "./config-layout";
 import { useResponsive } from "../hooks/use-responsive";
-import AcountPopover from "./common/account-popover";
 import Iconify from "../components/iconify";
 import { useLocation, useParams } from "react-router-dom";
 import RouterLink from "../routes/components/router-link";
+import ChatAvatar from "./common/chat-avatar";
 
 function Header({ onOpenSidebar }: { onOpenSidebar: () => void }) {
   const { theme } = useTheme();
@@ -80,7 +80,7 @@ function Header({ onOpenSidebar }: { onOpenSidebar: () => void }) {
           <Box sx={{ flexGrow: 1 }} />
           <Stack direction="row" alignItems="center" spacing={1}>
             <ThemeToggleButton />
-            <AcountPopover />
+            <ChatAvatar />
           </Stack>
         </Toolbar>
       </AppBar>

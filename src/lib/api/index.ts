@@ -15,3 +15,9 @@ export const removeBasicAuth = () => {
     delete API.defaults.headers.common.Authorization;
 }
 
+export const uploadFile = async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await API.post('/upload', formData);
+    return response.data;
+}
