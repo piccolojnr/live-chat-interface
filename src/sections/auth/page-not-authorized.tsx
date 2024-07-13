@@ -1,10 +1,32 @@
 import React from "react";
 import { Container, Typography, Box } from "@mui/material";
 import { LockOutlined } from "@mui/icons-material";
+import RouterLink from "../../routes/components/router-link";
+import Iconify from "../../components/iconify";
 
 const PageNotAuthorized: React.FC = () => {
   return (
     <Container maxWidth="sm">
+      <Box
+        component={RouterLink}
+        href="/login"
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          m: 3,
+        }}
+      >
+        <Iconify
+          // login icon
+          icon="mdi:login"
+          sx={{
+            color: "primary.main",
+            width: 32,
+            height: 32,
+          }}
+        />
+      </Box>
       <Box sx={{ mt: 8 }} textAlign={"center"}>
         <LockOutlined sx={{ fontSize: 80, mb: 2 }} />
         <Typography variant="h2" gutterBottom>

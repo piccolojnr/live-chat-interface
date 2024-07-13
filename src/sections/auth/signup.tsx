@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { RootState, AppDispatch } from "../../store";
 import { register } from "../../store/user-slice";
-import UploadPicture from "../../components/uploadPicture";
 import {
   TextField,
   Typography,
@@ -11,98 +10,175 @@ import {
   Stack,
   InputAdornment,
   IconButton,
+  Link,
   alpha,
   Card,
-  Link,
   Divider,
+  Grid,
 } from "@mui/material";
 import Iconify from "../../components/iconify";
 import { LoadingButton } from "@mui/lab";
 import { bgGradient } from "../../theme/css";
 import { useTheme } from "../../theme";
+import Logo from "../../components/logo";
+import RouterLink from "../../routes/components/router-link";
+
+const validatePhone = (phone: string) => {
+  if (!/^\d{10}$/.test(phone)) {
+    return "Invalid phone number.";
+  }
+};
+
+const validateCountryCode = (countryCode: string) => {
+  if (!/^\+\d{1,4}$/.test(countryCode)) {
+    return "Invalid country code.";
+  }
+};
+
+const validatePassword = (password: string) => {
+  if (password.length < 8) {
+    return "Password must be at least 8 characters long.";
+  }
+};
+
+const validateUsername = (username: string) => {
+  if (username.length < 6) {
+    return "Username must be at least 6 characters long.";
+  }
+};
 
 const Signup: React.FC = () => {
   const { theme } = useTheme();
-  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
   const { isAuthenticated } = useSelector((state: RootState) => state.user);
   const [username, setUsername] = useState<string>("");
+  const [countryCode, setCountryCode] = useState<string>("+233");
+  const [phone, setPhone] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [Phone, setPhone] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
   const [error, setError] = useState<{
     username: string | null;
+    phone: string | null;
+    country: string | null;
     password: string | null;
     submit: string | null;
-    email: string | null;
-    confirmPassword: string | null;
   }>({
     username: null,
+    phone: null,
+    country: null,
     password: null,
     submit: null,
-    email: null,
-    confirmPassword: null,
   });
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  const handleUpdateUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(e.target.value);
-  };
 
   const handleUpdateEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
+    setUsername(e.target.value);
   };
 
   const handleUpdatePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
 
-  const handleUpdateConfirmPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setConfirmPassword(e.target.value);
+  const validate = () => {
+    let isValid = true;
+
+    // username validation
+    const usernameError = validateUsername(username);
+    if (usernameError) {
+      setError((prevError) => ({ ...prevError, username: usernameError }));
+      isValid = false;
+    }
+
+    // password validation
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      setError((prevError) => ({ ...prevError, password: passwordError }));
+      isValid = false;
+    }
+
+    // country code validation
+    const countryCodeError = validateCountryCode(countryCode);
+    if (countryCodeError) {
+      setError((prevError) => ({ ...prevError, country: countryCodeError }));
+      isValid = false;
+    }
+
+    // phone validation (assuming phone is optional but must be numeric if provided)
+    if (phone.length > 0) {
+      const phoneError = validatePhone(phone);
+      if (phoneError) {
+        setError((prevError) => ({ ...prevError, phone: phoneError }));
+        isValid = false;
+      }
+    }
+
+    return isValid;
   };
 
-  const handleUpdatePhone = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPhone(e.target.value);
-  };
-
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(register({ username, email, password })).catch((error) => {
-      setError({ ...error, submit: error.message });
-    });
+    if (!validate()) return;
+
+    setLoading(true);
+    try {
+      await dispatch(
+        register({
+          username,
+          password,
+          phone: countryCode + phone,
+          bio: null,
+          profilePicture: null,
+        })
+      ).unwrap();
+    } catch (error: any) {
+      setError((prevError) => ({ ...prevError, submit: error.message }));
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (isAuthenticated) {
-    return <Navigate to="/" />;
+    return <Navigate to="/complete-profile" />;
   }
-  const renderForm = (
-    <form noValidate autoComplete="off" onSubmit={handleRegister}>
-      <Stack spacing={2.5}>
-        <UploadPicture />
 
-        <TextField 
+  const renderForm = (
+    <form noValidate autoComplete="off" onSubmit={handleSignup}>
+      <Stack spacing={3}>
+        <TextField
           onFocus={() => setError({ ...error, username: null })}
           value={username}
-          onChange={handleUpdateUsername}
+          onChange={handleUpdateEmail}
           name="username"
           label="Username"
           error={Boolean(error.username)}
           helperText={error.username}
         />
-
-        <TextField
-          onFocus={() => setError({ ...error, email: null })}
-          value={email}
-          onChange={handleUpdateEmail}
-          name="email"
-          label="Email address"
-          error={Boolean(error.username)}
-          helperText={error.username}
-        />
+        <Grid container direction="row" wrap="nowrap">
+          <Grid item xs={4} mr={1}>
+            <TextField
+              onFocus={() => setError({ ...error, phone: null })}
+              value={countryCode}
+              onChange={(e) => setCountryCode(e.target.value)}
+              name="countryCode"
+              label="Country Code"
+              error={Boolean(error.phone)}
+              helperText={error.phone}
+            />
+          </Grid>
+          <Grid item xs={8}>
+            <TextField
+              onFocus={() => setError({ ...error, phone: null })}
+              value={phone}
+              type="tel"
+              onChange={(e) => setPhone(e.target.value)}
+              name="phone"
+              label="Phone"
+              error={Boolean(error.phone)}
+              helperText={error.phone}
+            />
+          </Grid>
+        </Grid>
 
         <TextField
           onFocus={() => setError({ ...error, password: null })}
@@ -129,83 +205,51 @@ const Signup: React.FC = () => {
           }}
         />
 
-        <TextField
-          onFocus={() => setError({ ...error, confirmPassword: null })}
-          name="confirmPassword"
-          label="Confirm Password"
-          type={showConfirmPassword ? "text" : "password"}
-          value={confirmPassword}
-          onChange={handleUpdateConfirmPassword}
-          error={Boolean(error.confirmPassword)}
-          helperText={error.confirmPassword}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  edge="end"
-                >
-                  <Iconify
-                    icon={showConfirmPassword ? "eva:eye-fill" : "eva:eye-off-fill"}
-                  />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-
-        
-        <TextField
-          value={Phone}
-          onChange={handleUpdatePhone}
-          name="phone"
-          label="Phone number"
-          error={Boolean(error.email)}
-          helperText={error.email}
-        />
-      </Stack>
-
-      <LoadingButton
-        fullWidth
-        size="large"
-        type="submit"
-        variant="contained"
-        color="inherit"
-        disabled={loading}
-        loading={loading}
-        sx={{
-          marginTop: 2,
-        }}
-      >
-        Sign up
-      </LoadingButton>
-
-      <Divider sx={{ my: 3 }}></Divider>
-
-      <Typography variant="subtitle2" color="text.secondary" textAlign={'center'}>
-        Already have an account?{" "}
-        <Link
-          onClick={() => navigate("/login")}
-          variant="subtitle2"
-          underline="hover"
+        <LoadingButton
+          fullWidth
+          size="large"
+          type="submit"
+          variant="contained"
+          disabled={loading}
+          loading={loading}
         >
-          Sign in
-        </Link>
-      </Typography>
+          Signup
+        </LoadingButton>
 
-      <Stack direction="row" alignItems="center" justifyContent="center">
-        <Typography
-          variant="subtitle2"
-          color="error"
-          sx={{
-            mt: 2,
-          }}
-        >
-          {error.submit}
-        </Typography>
+        <Stack direction="row" alignItems="center" justifyContent="center">
+          <Typography
+            variant="subtitle2"
+            sx={{
+              mt: 2,
+            }}
+          >
+            Already have an account?{" "}
+            <Link
+              variant="subtitle2"
+              underline="hover"
+              component={RouterLink}
+              href="/login"
+            >
+              Login
+            </Link>
+          </Typography>
+        </Stack>
+
+        <Stack direction="row" alignItems="center" justifyContent="center">
+          <Typography
+            variant="subtitle2"
+            color="error"
+            sx={{
+              mt: 2,
+            }}
+          >
+            {error.submit}
+          </Typography>
+        </Stack>
       </Stack>
     </form>
   );
+
   return (
     <Box
       sx={{
@@ -220,33 +264,21 @@ const Signup: React.FC = () => {
         justifyContent: "center",
       }}
     >
-      {/* home button */}
-      {/* {isAuthenticated && ( */}
-      <Box
+      <Logo
         sx={{
           position: "absolute",
           top: 0,
           left: 0,
           m: 3,
         }}
-        onClick={() => navigate("/")}
-      >
-        <Iconify
-          icon="fluent:home-20-filled"
-          sx={{
-            color: theme.palette.primary.main,
-            fontSize: 32,
-            cursor: "pointer",
-          }}
-        />
-      </Box>
-      {/* )} */}
+      />
 
       <Stack alignItems="center" justifyContent="center" sx={{ height: 1 }}>
         <Card
           sx={{
             p: 5,
             width: 1,
+            maxWidth: 420,
           }}
         >
           <Typography variant="h4">Sign up</Typography>

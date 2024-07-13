@@ -13,6 +13,7 @@ import { RootState } from "../store";
 import Scrollbar from "../components/scrolbar";
 import SearchTabs from "./common/search-tabs";
 import Iconify from "../components/iconify";
+import AcountPopover from "./common/account-popover";
 
 export default function Sidebar({
   openSidebar,
@@ -55,6 +56,8 @@ export default function Sidebar({
           {account?.email}
         </Typography>
       </Box>
+      <Box sx={{ ml: "auto" }} />
+      <AcountPopover />
     </Box>
   );
 

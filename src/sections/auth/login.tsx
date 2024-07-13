@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { RootState, AppDispatch } from "../../store";
 import { login } from "../../store/user-slice";
 import {
   TextField,
-  Button,
-  Container,
   Typography,
   Box,
   Stack,
@@ -23,12 +21,12 @@ import Iconify from "../../components/iconify";
 import { LoadingButton } from "@mui/lab";
 import { bgGradient } from "../../theme/css";
 import { useTheme } from "../../theme";
+import Logo from "../../components/logo";
+import RouterLink from "../../routes/components/router-link";
 
 const Login: React.FC = () => {
   const { theme } = useTheme();
-  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-
   const { isAuthenticated } = useSelector((state: RootState) => state.user);
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -55,9 +53,11 @@ const Login: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(login({ username, password, rememberMe })).catch((error) => {
+    setLoading(true);
+    await dispatch(login({ username, password, rememberMe })).catch((error) => {
       setError({ ...error, submit: error.message });
     });
+    setLoading(false);
   };
 
   if (isAuthenticated) {
@@ -71,7 +71,7 @@ const Login: React.FC = () => {
           value={username}
           onChange={handleUpdateEmail}
           name="username"
-          label="Email address/Username"
+          label="Username"
           error={Boolean(error.username)}
           helperText={error.username}
         />
@@ -100,27 +100,26 @@ const Login: React.FC = () => {
             ),
           }}
         />
-      </Stack>
 
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="flex-between"
-        sx={{ my: 3, width: "100%", justifyContent: "space-between" }}
-      >
-        <FormControlLabel
-          label="remember me"
-          control={
-            <Checkbox
-              value={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
-            />
-          }
-        />
-        <Link variant="subtitle2" underline="hover">
-          Forgot password?
-        </Link>
-      </Stack>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="flex-between"
+          sx={{ my: 3, width: "100%", justifyContent: "space-between" }}
+        >
+          <FormControlLabel
+            label="remember me"
+            control={
+              <Checkbox
+                value={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
+            }
+          />
+          <Link variant="subtitle2" underline="hover">
+            Forgot password?
+          </Link>
+        </Stack>
 
       <LoadingButton
         fullWidth
@@ -134,29 +133,17 @@ const Login: React.FC = () => {
         Login
       </LoadingButton>
 
-      <Divider sx={{ my: 3 }}></Divider>
-
-      <Typography variant="subtitle2" color="text.secondary" textAlign={'center'}>
-        Don't have an account?{" "}
-        <Link
-          onClick={() => navigate("/signup")}
-          variant="subtitle2"
-          underline="hover"
-        >
-          Sign up
-        </Link>
-      </Typography>
-
-      <Stack direction="row" alignItems="center" justifyContent="center">
-        <Typography
-          variant="subtitle2"
-          color="error"
-          sx={{
-            mt: 2,
-          }}
-        >
-          {error.submit}
-        </Typography>
+        <Stack direction="row" alignItems="center" justifyContent="center">
+          <Typography
+            variant="subtitle2"
+            color="error"
+            sx={{
+              mt: 2,
+            }}
+          >
+            {error.submit}
+          </Typography>
+        </Stack>
       </Stack>
     </form>
   );
@@ -174,28 +161,14 @@ const Login: React.FC = () => {
         justifyContent: "center",
       }}
     >
-      {/* home button */}
-      {/* {isAuthenticated && ( */}
-      <Box
+      <Logo
         sx={{
           position: "absolute",
           top: 0,
           left: 0,
           m: 3,
         }}
-        onClick={() => navigate("/")}
-      >
-        <Iconify
-          icon="fluent:home-20-filled"
-          sx={{
-            color: theme.palette.primary.main,
-            fontSize: 32,
-            cursor: "pointer",
-          }}
-        />
-      </Box>
-      {/* )} */}
-
+      />
       <Stack alignItems="center" justifyContent="center" sx={{ height: 1 }}>
         <Card
           sx={{

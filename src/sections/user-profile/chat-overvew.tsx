@@ -1,4 +1,4 @@
-import { Avatar, Box, Container, Grid, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Container, Stack, Typography } from "@mui/material";
 import { IChat } from "../../types";
 
 export default function ChatOverview({ chat }: { chat: IChat }) {
