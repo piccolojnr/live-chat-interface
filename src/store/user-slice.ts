@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { IUser } from '../types';
 import {
     login as loginRequest,
-    logout as logoutRequest, getUser, register as registerRequest, updateProfile as updateProfileRequest
+    logout as logoutRequest, getUser, register as registerRequest, updateProfile as updateProfileRequest, getUsers as getUsersRequest
 } from '../lib/api/user';
 
 interface UserState {
@@ -80,6 +80,18 @@ export const updateProfile = createAsyncThunk(
     }
 );
 
+export const getUsers = createAsyncThunk(
+    'user/getUsers',
+    async (query: string = "", thunkAPI) => {
+        try {
+            const response = await getUsersRequest(query);
+            return response;
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue(error.message || 'An error occurred');
+        }
+    }
+);
+
 const userSlice = createSlice({
     name: 'user',
     initialState,
@@ -117,7 +129,22 @@ const userSlice = createSlice({
             })
             .addCase(register.rejected, (state, action) => {
                 state.error = action.payload as string;
+            })
+            .addCase(updateProfile.fulfilled, (state, action) => {
+                state.userInfo = action.payload;
+                state.error = null;
+            })
+            .addCase(updateProfile.rejected, (state, action) => {
+                state.error = action.payload as string;
+            })
+            .addCase(getUsers.fulfilled, (state, action) => {
+                state.allUsers = action.payload;
+                state.error = null;
+            })
+            .addCase(getUsers.rejected, (state, action) => {
+                state.error = action.payload as string;
             });
+
     }
 });
 

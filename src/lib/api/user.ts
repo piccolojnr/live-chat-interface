@@ -27,6 +27,12 @@ export const getUser = async () => {
     return response.data;
 }
 
+export const getUsers = async (query: string = "") => {
+    const response = await API.get(`/user?query=${query}`);
+    return response.data;
+
+}
+
 export const updateProfile = async (profilePicture: string | null, bio: string) => {
     const response = await API.patch('/user/me', { profilePicture, bio });
     return response.data;

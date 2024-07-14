@@ -1,24 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Toolbar, Typography, Stack } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store";
+import { AppDispatch, RootState } from "../../store";
 import { setActiveChat, addChat } from "../../store/chat-slice";
 import { faker } from "@faker-js/faker";
 import Searchbar from "../../components/searchbar";
 import UserItem from "../../components/user-item";
 import { IUser } from "../../types";
 import { useNavigate } from "react-router-dom";
+import { getUsers } from "../../store/user-slice";
 
 export default function UserSearchbar() {
   const [query, setQuery] = useState("");
   const users = useSelector((state: RootState) => state.user.allUsers);
   const chats = useSelector((state: RootState) => state.chat.chats);
-  const dispatch = useDispatch();
+
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const filteredUsers = users.filter((user) =>
-    user.username.toLowerCase().includes(query.toLowerCase())
-  );
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        dispatch(getUsers(query)).unwrap();
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchUsers();
+  }, [query]);
 
   const handleUserClick = (user: IUser) => {
     // Check if a chat with this user already exists
@@ -44,7 +53,7 @@ export default function UserSearchbar() {
         px: 2,
       }}
     >
-      {filteredUsers.map((user) => (
+      {users.map((user) => (
         <UserItem key={user.id} user={user} onClick={handleUserClick} />
       ))}
     </Stack>
