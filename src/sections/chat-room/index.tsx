@@ -8,9 +8,10 @@ import { primary } from "../../theme/palette";
 import { grey } from "@mui/material/colors";
 import Scrollbar from "../../components/scrolbar";
 import { useResponsive } from "../../hooks/use-responsive";
-import { messages as _messages } from "../../_moke/messages";
 import ChatBubble from "./chat-bubble";
-import { account } from "../../_moke/account";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
+import { getChatMessages, sendMessage } from "../../store/chat-slice";
 
 const Textarea = styled(BaseTextareaAutosize)(
   ({ theme }) => `
@@ -47,26 +48,39 @@ const Textarea = styled(BaseTextareaAutosize)(
 `
 );
 
-const ChatRoom: React.FC = () => {
+const ChatRoom: React.FC<{ activeChatId: string }> = ({ activeChatId }) => {
   const mdUp = useResponsive("up", "md");
   const scrollBar = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useState<string>("");
-  const [messages, setMessages] = useState<IMessage[]>(_messages);
+  const dispatch = useDispatch<AppDispatch>();
+  const messages = useSelector((state: RootState) => state.chat.messages);
 
-  const handleSendMessage = (event: React.FormEvent) => {
+  const handleSendMessage = async (event: React.FormEvent) => {
     event.preventDefault();
     if (message.trim() === "") return;
 
-    const newMessage: IMessage = {
-      id: String(messages.length + 1),
-      sender: account,
-      message,
-      timestamp: new Date().toLocaleDateString(),
-    };
-    setMessages([...messages, newMessage]);
-    setMessage("");
+    dispatch(sendMessage({ chatId: activeChatId, message }))
+      .unwrap()
+      .then(() => {
+        setMessage("");
+        inputRef.current?.focus();
+      })
+      .catch((error) => {
+        console.error("Error sending message:", error);
+      });
   };
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      dispatch(getChatMessages({ chatId: activeChatId }))
+        .unwrap()
+        .catch((error) => {
+          console.error("Error fetching messages:", error);
+        });
+    };
+    fetchMessages();
+  }, [activeChatId]);
 
   useEffect(() => {
     if (scrollBar.current) {

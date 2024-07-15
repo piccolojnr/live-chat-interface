@@ -130,7 +130,12 @@ const Signup: React.FC = () => {
           bio: null,
           profilePicture: null,
         })
-      ).unwrap();
+      )
+        .unwrap()
+        .then(() => {})
+        .catch((error) => {
+          console.error("Error signing up:", error);
+        });
     } catch (error: any) {
       setError((prevError) => ({ ...prevError, submit: error.message }));
     } finally {

@@ -40,13 +40,13 @@ export default function ChatOverview({ chat }: { chat: IChat }) {
           </Typography>
           <Stack direction="row" spacing={1} justifyContent="center">
             {chat.participants.map((participant) => (
-              <Avatar key={participant.id} src={participant?.profilePicture} />
+              <Avatar key={participant._id} src={participant?.profilePicture} />
             ))}
           </Stack>
           <Box sx={{ mt: 2 }}>
             <Stack direction="row" spacing={1} justifyContent="center">
               {chat.participants.map((participant) => (
-                <Typography key={participant.id} variant="body2">
+                <Typography key={participant._id} variant="body2">
                   {participant.username}
                 </Typography>
               ))}

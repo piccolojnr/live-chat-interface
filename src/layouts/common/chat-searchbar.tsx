@@ -1,19 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Stack, Toolbar, Typography } from "@mui/material";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
 import Searchbar from "../../components/searchbar";
 import ChatItem from "../../components/chat-item";
+import { getChats } from "../../store/chat-slice";
 
 export default function ChatSearchbar() {
   const [query, setQuery] = useState("");
   const chats = useSelector((state: RootState) => state.chat.chats);
+  const dispatch = useDispatch<AppDispatch>();
 
-  const filteredChats = chats.filter((chat) =>
-    chat.participants.some((p) =>
-      p.username.toLowerCase().includes(query.toLowerCase())
-    )
-  );
+  useEffect(() => {
+    const fetchUsers = async () => {
+      dispatch(getChats({ query }))
+        .unwrap()
+        .catch((error) => {
+          console.error("Error fetching chats:", error);
+        });
+    };
+    fetchUsers();
+  }, [query]);
 
   const renderChatList = (
     <Stack
@@ -22,8 +29,8 @@ export default function ChatSearchbar() {
         px: 2,
       }}
     >
-      {filteredChats.map((chat) => (
-        <ChatItem key={chat.id} chat={chat} />
+      {chats.map((chat, index) => (
+        <ChatItem key={index} chat={chat} />
       ))}
     </Stack>
   );

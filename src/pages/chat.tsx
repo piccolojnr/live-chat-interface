@@ -12,7 +12,7 @@ export default function ChatPage() {
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.user.userInfo);
   const activeChat = useSelector((state: RootState) =>
-    state.chat.chats.find((chat) => chat.id === state.chat.activeChatId)
+    state.chat.chats.find((chat) => chat._id === state.chat.activeChatId)
   );
 
   useEffect(() => {
@@ -26,7 +26,11 @@ export default function ChatPage() {
       <Helmet>
         <title>Chat - {getChatName(activeChat, currentUser)}</title>
       </Helmet>
-      <ChatRoom />
+      {activeChat ? (
+        <ChatRoom activeChatId={activeChat._id} />
+      ) : (
+        <div>Loading...</div>
+      )}
     </>
   );
 }

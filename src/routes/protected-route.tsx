@@ -18,11 +18,15 @@ export default function ProtectedRoute({
 
   useEffect(() => {
     if (!isAuthenticated) {
-      dispatch(fetchUser()).then((response) => {
-        if (fetchUser.rejected.match(response)) {
-          navigate("/login"); // Redirect to login page if authentication fails
-        }
-      });
+      dispatch(fetchUser())
+        .then((response) => {
+          if (fetchUser.rejected.match(response)) {
+            navigate("/login"); // Redirect to login page if authentication fails
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching user:", error);
+        });
     }
   }, [isAuthenticated, dispatch, navigate]);
 

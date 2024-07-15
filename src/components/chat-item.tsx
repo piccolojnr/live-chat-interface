@@ -15,7 +15,7 @@ import { setActiveChat } from "../store/chat-slice";
 function ChatItem({ chat }: { chat: IChat }) {
   const account = useSelector((state: RootState) => state.user.userInfo);
   const activeChat = useSelector((state: RootState) => state.chat.activeChatId);
-  const active = activeChat === chat.id;
+  const active = activeChat === chat._id;
   const user =
     chat.type === "group"
       ? undefined
@@ -24,13 +24,13 @@ function ChatItem({ chat }: { chat: IChat }) {
       : chat.participants[0];
   const avatar = chat.type === "group" ? chat.avatar : user?.profilePicture;
   const navigate = useNavigate();
-  const path = `/chat/${chat.id}`;
+  const path = `/chat/${chat._id}`;
   const location = useLocation();
   const dispatch = useDispatch();
 
   const handleClick = () => {
     if (location.pathname !== path) {
-      dispatch(setActiveChat(chat.id));
+      dispatch(setActiveChat(chat._id));
       navigate(path);
     } else {
       dispatch(setActiveChat(null));

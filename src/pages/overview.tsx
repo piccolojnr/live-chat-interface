@@ -13,7 +13,7 @@ export default function OverviewPage() {
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.user.userInfo);
   const activeChat = useSelector((state: RootState) =>
-    state.chat.chats.find((chat) => chat.id === state.chat.activeChatId)
+    state.chat.chats.find((chat) => chat._id === state.chat.activeChatId)
   );
 
   useEffect(() => {

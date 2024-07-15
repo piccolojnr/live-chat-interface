@@ -74,8 +74,14 @@ const ProfileSetup: React.FC<ProfileSetupProps> = ({ user }) => {
 
     setLoading(true);
     try {
-      await dispatch(updateProfile({ profilePicture, bio })).unwrap();
-      handleClose();
+      await dispatch(updateProfile({ profilePicture, bio }))
+        .unwrap()
+        .then(() => {
+          navigate("/");
+        })
+        .catch((error) => {
+          console.error("Error updating profile:", error);
+        });
     } catch (error: any) {
       setError((prevError) => ({ ...prevError, submit: error.message }));
     } finally {

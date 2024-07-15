@@ -3,6 +3,7 @@ import {
   Box,
   ListItem,
   ListItemAvatar,
+  Stack,
   Typography,
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
@@ -40,15 +41,12 @@ const ChatBubble: React.FC<IMessage> = ({ message, sender, timestamp }) => {
         maxWidth: "75%",
         width: "fit-content",
         bgcolor: "background.paper",
-        ...(sender.id === user?.id && {
+        ...(sender._id === user?._id && {
           bgcolor: mode === "dark" ? "primary.dark" : "primary.light",
           alignSelf: "flex-end",
         }),
       }}
     >
-      <ListItemAvatar sx={{ mr: 1 }}>
-        <Avatar src={sender.profilePicture} sx={{ width: 24, height: 24 }} />
-      </ListItemAvatar>
       <Box
         sx={{
           display: "flex",
@@ -56,12 +54,34 @@ const ChatBubble: React.FC<IMessage> = ({ message, sender, timestamp }) => {
           wordBreak: "break-word",
         }}
       >
-        <Typography
-          variant="subtitle2"
-          sx={{ fontWeight: "bold", mb: 0.5, color: "text.primary" }}
-        >
-          {sender.username}
-        </Typography>
+        {sender._id !== user?._id && (
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems="center"
+            justifyContent="flex-start"
+            sx={{ mb: 2 }}
+          >
+            <Avatar
+              src={sender.profilePicture}
+              sx={{
+                width: 24,
+                height: 24,
+              }}
+            />
+            <Typography
+              variant="subtitle2"
+              sx={{
+                fontWeight: "bold",
+                mb: 0.5,
+                alignSelf: "flex-start",
+                color: "text.primary",
+              }}
+            >
+              {sender.username}
+            </Typography>
+          </Stack>
+        )}
         <Typography
           variant="body2"
           ref={messageRef}
