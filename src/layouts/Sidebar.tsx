@@ -14,6 +14,9 @@ import Scrollbar from "../components/scrolbar";
 import SearchTabs from "./common/search-tabs";
 import Iconify from "../components/iconify";
 import AcountPopover from "./common/account-popover";
+import { useSocket } from "../context/SocketContext";
+import { useEffect, useState } from "react";
+import OnlineUsersCount from "../components/online-users-count";
 
 export default function Sidebar({
   openSidebar,
@@ -22,6 +25,7 @@ export default function Sidebar({
   openSidebar: boolean;
   onCloseSidebar: () => void;
 }) {
+  const { isConnected } = useSocket();
   const mdUp = useResponsive("up", "md");
   const account = useSelector((state: RootState) => state.user.userInfo);
 
@@ -41,20 +45,29 @@ export default function Sidebar({
       <Avatar src={account?.profilePicture} alt="photoURL" />
       <Box sx={{ ml: 2 }}>
         <Typography variant="subtitle2">{account?.username}</Typography>
+        {/* socket status */}
         <Typography
-          variant="body2"
-          color="text.secondary"
+          variant="caption"
           sx={{
-            display: "-webkit-box",
-            overflow: "hidden",
-            WebkitBoxOrient: "vertical",
-            WebkitLineClamp: 1,
-            textOverflow: "ellipsis",
-            fontSize: 10,
+            display: "flex",
+            alignItems: "center",
+            color: isConnected ? "success.main" : "error.main",
           }}
         >
-          {account?.email}
+          {isConnected ? "Online" : "Offline"}
+          <Iconify
+            icon={isConnected ? "bi:circle-fill" : "bi:circle-fill"}
+            sx={{
+              ml: 0.5,
+              color: isConnected ? "success.main" : "error.main",
+              width: "0.75rem",
+              height: "0.75rem",
+            }}
+          />
         </Typography>
+
+        {/* online users */}
+        <OnlineUsersCount />
       </Box>
       <Box sx={{ ml: "auto" }} />
       <AcountPopover />

@@ -1,9 +1,14 @@
 import { API, setBasicAuth } from ".";
+import axios from 'axios';
 
 
 export const login = async (username: string, password: string, rememberMe?: boolean) => {
     setBasicAuth(username, password)
     const response = await API.post('/auth/connect', { rememberMe });
+    if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        axios.defaults.headers["X-Token"] = response.data.token;
+    }
     return response.data;
 }
 

@@ -21,6 +21,7 @@ export default function ProtectedRoute({
       dispatch(fetchUser())
         .then((response) => {
           if (fetchUser.rejected.match(response)) {
+            localStorage.removeItem("token"); // Clear token from local storage
             navigate("/login"); // Redirect to login page if authentication fails
           }
         })

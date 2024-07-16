@@ -1,9 +1,13 @@
 import axios from 'axios';
-export const BASE_API_URL = 'http://localhost:5000/api';
+import { BASE_API_URL } from '../constants';
+
+export const API_URL = `${BASE_API_URL}/api`;
 axios.defaults.withCredentials = true;
+axios.defaults.headers.common['X-Token'] = localStorage.getItem('token');
 
 export const API = axios.create({
-    baseURL: BASE_API_URL,
+    baseURL: API_URL,
+
 });
 
 export const setBasicAuth = (username: string, password: string) => {

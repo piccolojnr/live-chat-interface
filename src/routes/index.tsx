@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { Outlet, useRoutes } from "react-router-dom";
 import Layout from "../layouts";
 import ProtectedRoute from "./protected-route";
+import { SocketProvider } from "../context/SocketContext";
 
 export const MainPage = lazy(() => import("../pages/index"));
 export const ChatPage = lazy(() => import("../pages/chat"));
@@ -23,11 +24,13 @@ export default function Routes() {
     {
       element: (
         <Suspense>
-          <Layout>
-            <ProtectedRoute>
-              <Outlet />
-            </ProtectedRoute>
-          </Layout>
+          <SocketProvider>
+            <Layout>
+              <ProtectedRoute>
+                <Outlet />
+              </ProtectedRoute>
+            </Layout>
+          </SocketProvider>
         </Suspense>
       ),
       children: [

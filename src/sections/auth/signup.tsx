@@ -132,7 +132,9 @@ const Signup: React.FC = () => {
         })
       )
         .unwrap()
-        .then(() => {})
+        .then((data) => {
+          localStorage.setItem("token", data.token);
+        })
         .catch((error) => {
           console.error("Error signing up:", error);
         });

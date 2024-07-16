@@ -54,9 +54,14 @@ const Login: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await dispatch(login({ username, password, rememberMe })).catch((error) => {
-      setError({ ...error, submit: error.message });
-    });
+    await dispatch(login({ username, password, rememberMe }))
+      .unwrap()
+      .then((data) => {
+        setError({ ...error, submit: null });
+      })
+      .catch((error) => {
+        setError({ ...error, submit: error.message });
+      });
     setLoading(false);
   };
 
