@@ -30,7 +30,7 @@ const OnlineUsersCount: React.FC = () => {
       sx={{
         position: "absolute",
         top: "0",
-        right: "0",
+        left: "0",
         backgroundColor: alpha(primary.main, 0.3),
         color: "white",
         borderRadius: "50%",

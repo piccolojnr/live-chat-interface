@@ -76,6 +76,9 @@ const chatSlice = createSlice({
                 ))
             );
         },
+        addMessage: (state, action: PayloadAction<IMessage>) => {
+            state.messages.push(action.payload);
+        },
         updateMessages: (state, action: PayloadAction<IMessage[]>) => {
             state.messages = action.payload;
         },
@@ -86,7 +89,7 @@ const chatSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(sendMessage.fulfilled, (state, action) => {
-                state.messages.push(action.payload);
+                // state.messages.push(action.payload);
                 state.error = null;
             })
             .addCase(sendMessage.rejected, (state, action) => {
@@ -123,6 +126,6 @@ const chatSlice = createSlice({
     }
 });
 
-export const { setActiveChat, addChat, updateMessages } = chatSlice.actions;
+export const { setActiveChat, addChat, updateMessages, addMessage } = chatSlice.actions;
 
 export default chatSlice.reducer;

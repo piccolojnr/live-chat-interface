@@ -65,9 +65,6 @@ export default function Sidebar({
             }}
           />
         </Typography>
-
-        {/* online users */}
-        <OnlineUsersCount />
       </Box>
       <Box sx={{ ml: "auto" }} />
       <AcountPopover />
@@ -78,6 +75,7 @@ export default function Sidebar({
     <Scrollbar
       sx={{
         bgcolor: "background.paper",
+        height: "100%",
       }}
     >
       {renderAccount}
@@ -91,9 +89,12 @@ export default function Sidebar({
         variant="permanent"
         sx={{
           width: SIDEBAR.WIDTH,
+          height: "100%",
           flexShrink: 0,
           [`& .MuiDrawer-paper`]: {
             width: SIDEBAR.WIDTH,
+            height: "100%",
+
             boxSizing: "border-box",
             "& scrollbar": {
               display: "none",
@@ -116,8 +117,10 @@ export default function Sidebar({
       }}
       sx={{
         display: { xs: "block", md: "none" },
+        height: "100%",
         [`& .MuiDrawer-paper`]: {
           width: SIDEBAR.WIDTH,
+          height: "100%",
           boxSizing: "border-box",
           "& scrollbar": {
             display: "none",

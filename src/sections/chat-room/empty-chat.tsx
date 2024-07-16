@@ -1,9 +1,12 @@
 import Logo from "../../components/logo";
 import { Box, Container, Typography } from "@mui/material";
+import ChatHeader from "./chat-header";
 
 export default function EmptyChat() {
   return (
     <Container>
+      <ChatHeader />
+
       <Box
         sx={{
           py: 12,

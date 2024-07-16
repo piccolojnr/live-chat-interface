@@ -1,10 +1,25 @@
 import { Box } from "@mui/material";
-import Header from "./header";
 import Main from "./main";
 import Sidebar from "./Sidebar";
-import { useState } from "react";
+import { createContext, useContext, useState } from "react";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+interface LayoutContextProps {
+  onOpenSidebar: () => void;
+  onCloseSidebar: () => void;
+  openSidebar: boolean;
+}
+
+const LayoutContext = createContext<LayoutContextProps>({
+  onOpenSidebar: () => {},
+  onCloseSidebar: () => {},
+  openSidebar: false,
+});
+
+export const useLayout = () => useContext(LayoutContext);
+
+export const LayoutProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [openSidebar, setOpenSidebar] = useState(false);
   const onCloseSidebar = () => {
     setOpenSidebar(false);
@@ -13,8 +28,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     setOpenSidebar(true);
   };
   return (
-    <>
-      <Header onOpenSidebar={onOpenSidebar} />
+    <LayoutContext.Provider
+      value={{ onCloseSidebar, openSidebar, onOpenSidebar }}
+    >
       <Box
         sx={{
           minHeight: 1,
@@ -25,6 +41,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <Sidebar openSidebar={openSidebar} onCloseSidebar={onCloseSidebar} />
         <Main>{children}</Main>
       </Box>
-    </>
+    </LayoutContext.Provider>
   );
-}
+};

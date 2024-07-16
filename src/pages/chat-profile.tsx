@@ -1,16 +1,14 @@
 import { Helmet } from "react-helmet-async";
-import ChatRoom from "../sections/chat-room";
+import ChatProfile from "../sections/chat-room/chat-profile";
+import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import { getChatName } from "../utils/functions";
-import { useParams } from "react-router-dom";
-import { setActiveChat } from "../store/chat-slice";
 import { useEffect } from "react";
-import { useSocket } from "../context/SocketContext";
+import { setActiveChat } from "../store/chat-slice";
+import { getChatName } from "../utils/functions";
 
-export default function ChatPage() {
+export default function ChatProfilePage() {
   const params = useParams();
-  const { joinRoom, leaveRoom } = useSocket();
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.user.userInfo);
   const activeChat = useSelector((state: RootState) =>
@@ -20,23 +18,15 @@ export default function ChatPage() {
   useEffect(() => {
     if (params.id) {
       dispatch(setActiveChat(params.id));
-      joinRoom(params.id);
     }
-    return () => {
-      if (params.id) leaveRoom(params.id);
-    };
   }, [params.id, dispatch]);
 
   return (
     <>
       <Helmet>
-        <title>Chat - {getChatName(activeChat, currentUser)}</title>
+        <title>{getChatName(activeChat, currentUser)} - Profile</title>
       </Helmet>
-      {activeChat ? (
-        <ChatRoom activeChatId={activeChat._id} />
-      ) : (
-        <div>Loading...</div>
-      )}
+      {activeChat && <ChatProfile activeChatId={activeChat._id} />}
     </>
   );
 }

@@ -11,18 +11,14 @@ import {
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { setActiveChat } from "../store/chat-slice";
+import { getAvatar, getUser } from "../utils/functions";
 
 function ChatItem({ chat }: { chat: IChat }) {
   const account = useSelector((state: RootState) => state.user.userInfo);
   const activeChat = useSelector((state: RootState) => state.chat.activeChatId);
   const active = activeChat === chat._id;
-  const user =
-    chat.type === "group"
-      ? undefined
-      : chat.participants[0].username === account?.username
-      ? chat.participants[1]
-      : chat.participants[0];
-  const avatar = chat.type === "group" ? chat.avatar : user?.profilePicture;
+  const user = getUser(chat, account);
+  const avatar = getAvatar(chat, account);
   const navigate = useNavigate();
   const path = `/chat/${chat._id}`;
   const location = useLocation();

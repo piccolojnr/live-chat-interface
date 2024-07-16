@@ -1,12 +1,13 @@
 import { lazy, Suspense } from "react";
 import { Outlet, useRoutes } from "react-router-dom";
-import Layout from "../layouts";
 import ProtectedRoute from "./protected-route";
 import { SocketProvider } from "../context/SocketContext";
+import { LayoutProvider } from "../layouts";
 
 export const MainPage = lazy(() => import("../pages/index"));
 export const ChatPage = lazy(() => import("../pages/chat"));
 export const ProfilePage = lazy(() => import("../pages/profile"));
+export const ChatProfilePage = lazy(() => import("../pages/chat-profile"));
 export const OverviewPage = lazy(() => import("../pages/overview"));
 export const CompleteProfilePage = lazy(
   () => import("../pages/complete-profile")
@@ -25,11 +26,11 @@ export default function Routes() {
       element: (
         <Suspense>
           <SocketProvider>
-            <Layout>
+            <LayoutProvider>
               <ProtectedRoute>
                 <Outlet />
               </ProtectedRoute>
-            </Layout>
+            </LayoutProvider>
           </SocketProvider>
         </Suspense>
       ),
@@ -47,8 +48,8 @@ export default function Routes() {
           path: "chat/:id",
         },
         {
-          element: <OverviewPage />,
-          path: "chat/:id/overview",
+          element: <ChatProfilePage />,
+          path: "chat/:id/profile",
         },
         {
           element: <ProfilePage />,
