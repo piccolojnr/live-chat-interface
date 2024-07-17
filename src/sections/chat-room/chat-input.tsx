@@ -7,6 +7,7 @@ import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAuto
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { sendMessage } from "../../store/chat-slice";
+import { useSocket } from "../../context/SocketContext";
 
 const Textarea = styled(BaseTextareaAutosize)(
   ({ theme }) => `
@@ -47,6 +48,7 @@ const ChatInput: React.FC<{ activeChatId: string }> = ({ activeChatId }) => {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useState<string>("");
   const dispatch = useDispatch<AppDispatch>();
+  const { sendMessage: sM } = useSocket();
 
   const handleSendMessage = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -56,6 +58,7 @@ const ChatInput: React.FC<{ activeChatId: string }> = ({ activeChatId }) => {
       .unwrap()
       .then(() => {
         setMessage("");
+        sM(activeChatId);
         inputRef.current?.focus();
       })
       .catch((error) => {

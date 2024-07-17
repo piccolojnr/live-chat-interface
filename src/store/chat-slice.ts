@@ -89,7 +89,6 @@ const chatSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(sendMessage.fulfilled, (state, action) => {
-                // state.messages.push(action.payload);
                 state.error = null;
             })
             .addCase(sendMessage.rejected, (state, action) => {

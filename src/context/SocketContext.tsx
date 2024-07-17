@@ -1,10 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { BASE_API_URL } from "../lib/constants";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../store";
-import { base64ToAscii } from "../utils/functions";
-import { addMessage } from "../store/chat-slice";
 
 // Define the context type
 interface SocketContextType {
@@ -13,6 +9,7 @@ interface SocketContextType {
   onlineUsers: string[];
   joinRoom: (roomId: string) => void;
   leaveRoom: (roomId: string) => void;
+  sendMessage: (roomId: string) => void;
 }
 
 // Create the initial context with default values
@@ -22,6 +19,7 @@ const SocketContext = createContext<SocketContextType>({
   onlineUsers: [],
   joinRoom: () => {},
   leaveRoom: () => {},
+  sendMessage: () => {},
 });
 
 // Custom hook to use the socket context
@@ -32,7 +30,6 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
-  const dispatch = useDispatch<AppDispatch>();
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 
   useEffect(() => {
@@ -78,37 +75,30 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
       newSocket.off("error", handleError);
       newSocket.disconnect();
     };
-  }, [dispatch]);
-  const handleMessage = (msg: string) => {
-    const message = JSON.parse(base64ToAscii(msg));
-    dispatch(addMessage(message));
-  };
+  }, []);
 
   const joinRoom = (roomId: string) => {
-    socket?.emit("joinRoom", roomId, (error: string) => {
-      if (error) {
-        console.log("Join room error:", error);
-      } else {
-        console.log("Joined room:", roomId);
-        socket?.on("message", handleMessage);
-      }
-    });
+    socket?.emit("joinRoom", roomId);
   };
 
   const leaveRoom = (roomId: string) => {
-    socket?.emit("leaveRoom", roomId, (error: string) => {
-      if (error) {
-        console.log("Leave room error:", error);
-      } else {
-        console.log("Left room:", roomId);
-        socket?.off("message", handleMessage);
-      }
-    });
+    socket?.emit("leaveRoom", roomId);
+  };
+
+  const sendMessage = (roomId: string) => {
+    socket?.emit("send-message", roomId);
   };
 
   return (
     <SocketContext.Provider
-      value={{ socket, isConnected, onlineUsers, joinRoom, leaveRoom }}
+      value={{
+        socket,
+        isConnected,
+        onlineUsers,
+        joinRoom,
+        leaveRoom,
+        sendMessage,
+      }}
     >
       {children}
     </SocketContext.Provider>

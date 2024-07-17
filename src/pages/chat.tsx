@@ -2,15 +2,15 @@ import { Helmet } from "react-helmet-async";
 import ChatRoom from "../sections/chat-room";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import { getChatName } from "../utils/functions";
+import { base64ToAscii, getChatName } from "../utils/functions";
 import { useParams } from "react-router-dom";
-import { setActiveChat } from "../store/chat-slice";
+import { addMessage, setActiveChat } from "../store/chat-slice";
 import { useEffect } from "react";
 import { useSocket } from "../context/SocketContext";
 
 export default function ChatPage() {
   const params = useParams();
-  const { joinRoom, leaveRoom } = useSocket();
+  const { joinRoom, leaveRoom, socket } = useSocket(); // Assuming socket is accessible from useSocket
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.user.userInfo);
   const activeChat = useSelector((state: RootState) =>
@@ -21,11 +21,27 @@ export default function ChatPage() {
     if (params.id) {
       dispatch(setActiveChat(params.id));
       joinRoom(params.id);
+
+      // Attach message listener only once
+      const handleMessage = (msg: string) => {
+        const message = JSON.parse(base64ToAscii(msg));
+        dispatch(addMessage(message));
+      };
+
+      if (socket) {
+        socket.on("message", handleMessage);
+      }
     }
     return () => {
-      if (params.id) leaveRoom(params.id);
+      if (params.id) {
+        leaveRoom(params.id);
+        if (socket) {
+          socket.off("message");
+        }
+      }
     };
-  }, [params.id, dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.id, dispatch, socket]);
 
   return (
     <>
