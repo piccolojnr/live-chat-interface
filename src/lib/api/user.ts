@@ -38,7 +38,3 @@ export const getUsers = async (query: string = "") => {
 
 }
 
-export const updateProfile = async (profilePicture: string | null, bio: string) => {
-    const response = await API.patch('/user/me', { profilePicture, bio });
-    return response.data;
-}

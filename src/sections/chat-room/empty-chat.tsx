@@ -1,6 +1,6 @@
+import ChatHeader from "../../components/chat-header";
 import Logo from "../../components/logo";
 import { Box, Container, Typography } from "@mui/material";
-import ChatHeader from "./chat-header";
 
 export default function EmptyChat() {
   return (

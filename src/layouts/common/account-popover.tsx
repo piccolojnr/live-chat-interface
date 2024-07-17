@@ -12,12 +12,13 @@ import { AppDispatch, RootState } from "../../store";
 import Iconify from "../../components/iconify";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../store/user-slice";
+import { useLayout } from "..";
 
 const MENU_OPTIONS = [
   {
     label: "Profile",
     icon: "eva:person-fill",
-    path: "#",
+    path: "/profile",
   },
   {
     label: "Settings",
@@ -31,6 +32,7 @@ export default function AcountPopover() {
   const account = useSelector((state: RootState) => state.user.userInfo);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const { hideSidebar: onCloseSidebar } = useLayout();
 
   const handleOpen = (e: any) => {
     setOpen(e.currentTarget);
@@ -38,6 +40,7 @@ export default function AcountPopover() {
 
   const handleClose = (e: any, path: string) => {
     if (path !== "#" && MENU_OPTIONS.find((option) => option.path === path)) {
+      onCloseSidebar();
       navigate(path);
     }
     setOpen(null);

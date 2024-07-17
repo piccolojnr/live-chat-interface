@@ -3,17 +3,17 @@ import { Box, Toolbar, Typography, Stack } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { setActiveChat, addChat, createChat } from "../../store/chat-slice";
-import { faker } from "@faker-js/faker";
 import Searchbar from "../../components/searchbar";
 import UserItem from "../../components/user-item";
 import { IUser } from "../../types";
 import { useNavigate } from "react-router-dom";
 import { getUsers } from "../../store/user-slice";
+import { useLayout } from "..";
 
 export default function UserSearchbar() {
   const [query, setQuery] = useState("");
   const users = useSelector((state: RootState) => state.user.allUsers);
-  const chats = useSelector((state: RootState) => state.chat.chats);
+  const { hideSidebar: onCloseSidebar } = useLayout();
 
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
@@ -36,6 +36,7 @@ export default function UserSearchbar() {
         console.log("Chat created:", data);
         dispatch(setActiveChat(data.id));
         dispatch(addChat(data));
+        onCloseSidebar();
         navigate(`/chat/${data._id}`);
       })
       .catch((error) => {

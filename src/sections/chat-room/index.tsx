@@ -5,7 +5,7 @@ import { AppDispatch } from "../../store";
 import { getChatMessages } from "../../store/chat-slice";
 import ChatMessageList from "./chat-message-list";
 import ChatInput from "./chat-input";
-import ChatHeader from "./chat-header";
+import ChatHeader from "../../components/chat-header";
 import { useSocket } from "../../context/SocketContext";
 
 const ChatRoom: React.FC<{ activeChatId: string }> = ({ activeChatId }) => {

@@ -4,14 +4,14 @@ import Sidebar from "./Sidebar";
 import { createContext, useContext, useState } from "react";
 
 interface LayoutContextProps {
-  onOpenSidebar: () => void;
-  onCloseSidebar: () => void;
+  showSidebar: () => void;
+  hideSidebar: () => void;
   openSidebar: boolean;
 }
 
 const LayoutContext = createContext<LayoutContextProps>({
-  onOpenSidebar: () => {},
-  onCloseSidebar: () => {},
+  showSidebar: () => {},
+  hideSidebar: () => {},
   openSidebar: false,
 });
 
@@ -21,15 +21,19 @@ export const LayoutProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [openSidebar, setOpenSidebar] = useState(false);
-  const onCloseSidebar = () => {
+  const hideSidebar = () => {
     setOpenSidebar(false);
   };
-  const onOpenSidebar = () => {
+  const showSidebar = () => {
     setOpenSidebar(true);
   };
   return (
     <LayoutContext.Provider
-      value={{ onCloseSidebar, openSidebar, onOpenSidebar }}
+      value={{
+        hideSidebar,
+        openSidebar,
+        showSidebar,
+      }}
     >
       <Box
         sx={{
@@ -38,7 +42,7 @@ export const LayoutProvider: React.FC<{ children: React.ReactNode }> = ({
           flexDirection: { xs: "row", lg: "row" },
         }}
       >
-        <Sidebar openSidebar={openSidebar} onCloseSidebar={onCloseSidebar} />
+        <Sidebar openSidebar={openSidebar} onCloseSidebar={hideSidebar} />
         <Main>{children}</Main>
       </Box>
     </LayoutContext.Provider>

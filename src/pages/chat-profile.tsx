@@ -1,11 +1,11 @@
 import { Helmet } from "react-helmet-async";
-import ChatProfile from "../sections/chat-room/chat-profile";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { useEffect } from "react";
 import { setActiveChat } from "../store/chat-slice";
 import { getChatName } from "../utils/functions";
+import ChatProfile from "../sections/profile/chat-profile";
 
 export default function ChatProfilePage() {
   const params = useParams();

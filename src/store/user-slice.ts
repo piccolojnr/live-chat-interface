@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { IUser } from '../types';
 import {
     login as loginRequest,
-    logout as logoutRequest, getUser, register as registerRequest, updateProfile as updateProfileRequest, getUsers as getUsersRequest
+    logout as logoutRequest, getUser, register as registerRequest, getUsers as getUsersRequest,
 } from '../lib/api/user';
 
 interface UserState {
@@ -68,17 +68,7 @@ export const register = createAsyncThunk(
     }
 );
 
-export const updateProfile = createAsyncThunk(
-    'user/updateProfile',
-    async ({ profilePicture, bio }: { profilePicture: string | null; bio: string }, thunkAPI) => {
-        try {
-            const response = await updateProfileRequest(profilePicture, bio);
-            return response;
-        } catch (error: any) {
-            return thunkAPI.rejectWithValue(error.message || 'An error occurred');
-        }
-    }
-);
+
 
 export const getUsers = createAsyncThunk(
     'user/getUsers',
@@ -95,7 +85,11 @@ export const getUsers = createAsyncThunk(
 const userSlice = createSlice({
     name: 'user',
     initialState,
-    reducers: {},
+    reducers: {
+        updateProfile: (state, action) => {
+            state.userInfo = action.payload;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(login.fulfilled, (state, action) => {
@@ -130,13 +124,6 @@ const userSlice = createSlice({
             .addCase(register.rejected, (state, action) => {
                 state.error = action.payload as string;
             })
-            .addCase(updateProfile.fulfilled, (state, action) => {
-                state.userInfo = action.payload;
-                state.error = null;
-            })
-            .addCase(updateProfile.rejected, (state, action) => {
-                state.error = action.payload as string;
-            })
             .addCase(getUsers.fulfilled, (state, action) => {
                 state.allUsers = action.payload;
                 state.error = null;
@@ -147,5 +134,7 @@ const userSlice = createSlice({
 
     }
 });
+
+export const { updateProfile } = userSlice.actions;
 
 export default userSlice.reducer;

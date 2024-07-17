@@ -146,7 +146,7 @@ const Signup: React.FC = () => {
   };
 
   if (isAuthenticated) {
-    return <Navigate to="/complete-profile" />;
+    return <Navigate to="/profile" />;
   }
 
   const renderForm = (

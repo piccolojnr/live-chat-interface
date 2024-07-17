@@ -18,7 +18,7 @@ function ChatItem({ chat }: { chat: IChat }) {
   const activeChat = useSelector((state: RootState) => state.chat.activeChatId);
   const active = activeChat === chat._id;
   const user = getUser(chat, account);
-  const avatar = getAvatar(chat, account);
+  const avatar = getAvatar(chat, user);
   const navigate = useNavigate();
   const path = `/chat/${chat._id}`;
   const location = useLocation();
