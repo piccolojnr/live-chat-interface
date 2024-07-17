@@ -1,5 +1,4 @@
 import { styled } from "@mui/material/styles";
-import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { Avatar, Stack } from "@mui/material";
 import { useState } from "react";
@@ -19,13 +18,16 @@ const VisuallyHiddenInput = styled("input")({
 
 interface InputFileUploadProps {
   onFileChange: (file: File | null) => void;
-  file?: string;
+  file: File | null;
+  placeholder?: string;
 }
 
 export default function InputFileUpload({
   onFileChange,
   file,
+  placeholder,
 }: InputFileUploadProps) {
+  const [selected, setSelectedImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;
@@ -44,12 +46,13 @@ export default function InputFileUpload({
     >
       <Avatar
         alt="Uploaded file"
-        src={file}
+        src={file ? URL.createObjectURL(file) : placeholder}
         sx={{
           width: 40,
           height: 40,
         }}
       />
+
       <LoadingButton
         component="label"
         role={undefined}
