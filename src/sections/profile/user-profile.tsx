@@ -11,33 +11,22 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { getUser } from "../../utils/functions";
-import ChatHeader from "../../components/chat-header";
 import { useSocket } from "../../context/SocketContext";
+import { IUser } from "../../types";
+import ChatHeader from "../chat/chat-header";
 
 interface ChatProfileProps {
-  activeChatId: string;
+  user: IUser;
 }
 
-const ChatProfile: React.FC<ChatProfileProps> = ({ activeChatId }) => {
-  const { onlineUsers } = useSocket();
-  const account = useSelector((state: RootState) => state.user.userInfo);
-  const chat = useSelector((state: RootState) =>
-    state.chat.chats.find((chat) => chat._id === activeChatId)
-  );
-
-  if (!chat) {
-    return null;
-  }
-
-  const user = getUser(chat, account);
-
+const UserProfile: React.FC<ChatProfileProps> = ({ user }) => {
   if (!user) {
     return null;
   }
 
   return (
     <Container>
-      <ChatHeader onlineUser={onlineUsers} />
+      <ChatHeader user={user} />
       <Paper elevation={3} sx={{ padding: 3, mt: 4, borderRadius: 2 }}>
         <Box
           sx={{
@@ -57,8 +46,8 @@ const ChatProfile: React.FC<ChatProfileProps> = ({ activeChatId }) => {
               {user.username}
             </Typography>
             <Chip
-              label={onlineUsers.includes(user._id) ? "Online" : "Offline"}
-              color={onlineUsers.includes(user._id) ? "success" : "default"}
+              label={true ? "Online" : "Offline"}
+              color={true ? "success" : "default"}
               size="medium"
             />
           </Stack>
@@ -68,4 +57,4 @@ const ChatProfile: React.FC<ChatProfileProps> = ({ activeChatId }) => {
   );
 };
 
-export default ChatProfile;
+export default UserProfile;

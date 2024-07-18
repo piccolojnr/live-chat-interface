@@ -1,10 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IChat, IMessage } from '../types';
+import { IChat } from '../types';
+
+export type Message = {
+    sender: string;
+    messages: string;
+    timestamp: string;
+};
 
 interface ChatState {
     activeChatId: string | null;
     chats: IChat[];
-    messages: IMessage[];
+    messages: Message[];
 }
 
 const initialState: ChatState = {
@@ -12,6 +18,7 @@ const initialState: ChatState = {
     chats: [],
     messages: [],
 };
+
 
 
 
@@ -33,16 +40,15 @@ const chatSlice = createSlice({
         setChats: (state, action: PayloadAction<IChat[]>) => {
             state.chats = action.payload;
         },
-        setMessages: (state, action: PayloadAction<IMessage[]>) => {
+        setMessages: (state, action: PayloadAction<Message[]>) => {
             state.messages = action.payload;
         },
-        addMessage: (state, action: PayloadAction<IMessage>) => {
+        addMessage: (state, action: PayloadAction<Message>) => {
             state.messages.push(action.payload);
         },
-        updateMessages: (state, action: PayloadAction<IMessage[]>) => {
+        updateMessages: (state, action: PayloadAction<Message[]>) => {
             state.messages = action.payload;
         },
-
     },
 
 });

@@ -3,11 +3,14 @@ import { Outlet, useRoutes } from "react-router-dom";
 import ProtectedRoute from "./protected-route";
 import { SocketProvider } from "../context/SocketContext";
 import { LayoutProvider } from "../layouts";
+import PrivateChatPage from "../pages/private-chat";
 
 export const MainPage = lazy(() => import("../pages/index"));
-export const ChatPage = lazy(() => import("../pages/chat"));
+export const PivateChatPage = lazy(() => import("../pages/private-chat"));
 export const ProfilePage = lazy(() => import("../pages/profile"));
-export const ChatProfilePage = lazy(() => import("../pages/chat-profile"));
+export const PrivateChatProfilePage = lazy(
+  () => import("../pages/private-chat-profile")
+);
 export const SettingsPage = lazy(() => import("../pages/settings"));
 export const LoginPage = lazy(() => import("../pages/login"));
 export const SignupPage = lazy(() => import("../pages/signup"));
@@ -40,12 +43,12 @@ export default function Routes() {
           path: "chat",
         },
         {
-          element: <ChatPage />,
-          path: "chat/:id",
+          element: <PrivateChatPage />,
+          path: "private-chat/:id",
         },
         {
-          element: <ChatProfilePage />,
-          path: "chat/:id/profile",
+          element: <PrivateChatProfilePage />,
+          path: "private-chat/:id/profile",
         },
         {
           element: <ProfilePage />,

@@ -5,7 +5,9 @@ import { grey } from "@mui/material/colors";
 import { primary } from "../../theme/palette";
 import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAutosize";
 import { useSocket } from "../../context/SocketContext";
-import { requestSendMessage } from "../../lib/api/chat";
+import { IUser } from "../../types";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 const Textarea = styled(BaseTextareaAutosize)(
   ({ theme }) => `
@@ -42,25 +44,18 @@ const Textarea = styled(BaseTextareaAutosize)(
 `
 );
 
-const ChatInput: React.FC<{ activeChatId: string }> = ({ activeChatId }) => {
+const ChatInput: React.FC<{ user: IUser }> = ({ user }) => {
+  const account = useSelector((state: RootState) => state.user.userInfo);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useState<string>("");
-  // const { sendMessage: sM } = useSocket();
+  const { emitMessage } = useSocket();
 
   const handleSendMessage = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (message.trim() === "") return;
+    if (message.trim() === "" || !account) return;
 
-    // requestSendMessage(activeChatId, message)
-    //   .then(() => {
-    //     setMessage("");
-
-    //     sM(activeChatId, message);
-    //     inputRef.current?.focus();
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error sending message:", error);
-    //   });
+    emitMessage(user._id, account._id, message);
+    setMessage("");
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {

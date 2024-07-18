@@ -5,7 +5,7 @@ import { RootState } from "../store";
 import { useEffect } from "react";
 import { setActiveChat } from "../store/chat-slice";
 import { getChatName } from "../utils/functions";
-import ChatProfile from "../sections/profile/chat-profile";
+import ChatProfile from "../sections/profile/user-profile";
 
 export default function ChatProfilePage() {
   const params = useParams();
@@ -26,7 +26,7 @@ export default function ChatProfilePage() {
       <Helmet>
         <title>{getChatName(activeChat, currentUser)} - Profile</title>
       </Helmet>
-      {activeChat && <ChatProfile activeChatId={activeChat._id} />}
+      {/* {activeChat && <ChatProfile activeChatId={activeChat._id} />} */}
     </>
   );
 }

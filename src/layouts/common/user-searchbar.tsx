@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Box, Toolbar, Typography, Stack } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
-import { setActiveChat, addChat } from "../../store/chat-slice";
 import Searchbar from "../../components/searchbar";
 import UserItem from "../../components/user-item";
 import { IUser } from "../../types";
@@ -10,13 +9,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useLayout } from "..";
 import { getUsersRequest } from "../../lib/api/user";
 import { setUsers } from "../../store/user-slice";
-import { requestCreateChat } from "../../lib/api/chat";
 
 export default function UserSearchbar() {
   const [query, setQuery] = useState("");
   const users = useSelector((state: RootState) => state.user.allUsers);
-  const user = useSelector((state: RootState) => state.user.userInfo);
-  const { hideSidebar: onCloseSidebar } = useLayout();
+  const account = useSelector((state: RootState) => state.user.userInfo);
+  const { hideSidebar } = useLayout();
 
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
@@ -34,20 +32,11 @@ export default function UserSearchbar() {
     };
     fetchUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, location.pathname, user]);
+  }, [query, location.pathname, account]);
 
   const handleUserClick = (user: IUser) => {
-    requestCreateChat([user.username])
-      .then((data) => {
-        console.log("Chat created:", data);
-        dispatch(setActiveChat(data.id));
-        dispatch(addChat(data));
-        onCloseSidebar();
-        navigate(`/chat/${data._id}`);
-      })
-      .catch((error) => {
-        console.error("Error creating chat:", error);
-      });
+    navigate(`/private-chat/${user._id}`);
+    hideSidebar();
   };
 
   const renderUserList = (

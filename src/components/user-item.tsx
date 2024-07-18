@@ -7,6 +7,9 @@ import {
   Typography,
 } from "@mui/material";
 import { IUser } from "../types";
+import { RootState } from "../store";
+import { useSelector } from "react-redux";
+import { isOnline } from "../store/user-slice";
 
 function UserItem({
   user,
@@ -15,6 +18,10 @@ function UserItem({
   user: IUser;
   onClick?: (user: IUser) => void;
 }) {
+  const activeUser = useSelector((state: RootState) => state.user.activeUser);
+
+  const active = activeUser?._id === user._id;
+  const online = useSelector(isOnline(user._id));
   return (
     <ListItemButton
       component={Button}
@@ -31,6 +38,16 @@ function UserItem({
         "&:hover": {
           bgcolor: (theme) => alpha(theme.palette.grey[500], 0.24),
         },
+        ...(active
+          ? {
+              color: "primary.main",
+              fontWeight: "fontWeightSemiBold",
+              bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
+              "&:hover": {
+                bgcolor: (theme) => alpha(theme.palette.primary.main, 0.16),
+              },
+            }
+          : {}),
       }}
     >
       <Box component="span" sx={{ width: 24, height: 24, mr: 2 }}>
@@ -39,6 +56,15 @@ function UserItem({
             width: 20,
             height: 20,
             mr: 2,
+            ...(online
+              ? {
+                  border: "2px solid",
+                  borderColor: "success.main",
+                }
+              : {
+                  border: "2px solid",
+                  borderColor: "error.main",
+                }),
           }}
           src={user.profilePicture}
           alt="photoUrl"

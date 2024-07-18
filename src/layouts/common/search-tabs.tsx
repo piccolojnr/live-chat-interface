@@ -49,26 +49,26 @@ export default function SearchTabs() {
         <Tab
           sx={{ width: "50%" }}
           label={
-            <Iconify icon="lets-icons:chat-fill" style={{ fontSize: "24px" }} />
+            <Iconify
+              icon="lets-icons:chat-alt-add-fill"
+              style={{ fontSize: "24px" }}
+            />
           }
           {...a11yProps(0)}
         />
         <Tab
           sx={{ width: "50%" }}
           label={
-            <Iconify
-              icon="lets-icons:chat-alt-add-fill"
-              style={{ fontSize: "24px" }}
-            />
+            <Iconify icon="lets-icons:chat-fill" style={{ fontSize: "24px" }} />
           }
           {...a11yProps(1)}
         />
       </Tabs>
       <TabPanel value={value} index={0}>
-        <ChatSearchbar />
+        <UserSearchbar />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <UserSearchbar />
+        {/* <ChatSearchbar /> */}
       </TabPanel>
     </Box>
   );
