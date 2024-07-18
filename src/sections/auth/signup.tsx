@@ -1,8 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { AppDispatch } from "../../store";
-import { login } from "../../store/user-slice";
 import {
   TextField,
   Typography,
@@ -50,7 +47,6 @@ const validateUsername = (username: string) => {
 
 const Signup: React.FC = () => {
   const { theme } = useTheme();
-  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [username, setUsername] = useState<string>("");
   const [countryCode, setCountryCode] = useState<string>("+233");
@@ -126,9 +122,8 @@ const Signup: React.FC = () => {
 
       await registerRequest(username, password, number)
         .then((data) => {
-          localStorage.setItem("token", data.token);
-          dispatch(login(data));
-          navigate("/profile", { replace: true });
+          console.log("Signup successful:", data);
+          navigate("/login", { replace: true });
         })
         .catch((error) => {
           console.error("Error signing up:", error);
