@@ -27,7 +27,7 @@ export default function AcountPopover() {
     setOpen(e.currentTarget);
   };
 
-  const handleClose = (e: any, path: string) => {
+  const handleClose = () => {
     setOpen(null);
   };
 
@@ -41,9 +41,9 @@ export default function AcountPopover() {
   };
   const handleProfile = () => {
     dispatch(setActiveChat(null));
-    setOpen(null);
     onCloseSidebar();
     navigate("/profile");
+    handleClose();
   };
   return (
     <>
