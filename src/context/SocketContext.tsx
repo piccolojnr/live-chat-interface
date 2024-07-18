@@ -9,7 +9,7 @@ interface SocketContextType {
   onlineUsers: string[];
   joinRoom: (roomId: string) => void;
   leaveRoom: (roomId: string) => void;
-  sendMessage: (roomId: string) => void;
+  sendMessage: (roomId: string, message: string) => void;
 }
 
 // Create the initial context with default values
@@ -85,8 +85,8 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
     socket?.emit("leaveRoom", roomId);
   };
 
-  const sendMessage = (roomId: string) => {
-    socket?.emit("send-message", roomId);
+  const sendMessage = (roomId: string, message: string) => {
+    socket?.emit("send-message", {roomId, message});
   };
 
   return (
