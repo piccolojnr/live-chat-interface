@@ -1,11 +1,4 @@
-import {
-  Avatar,
-  Box,
-  ListItem,
-  ListItemAvatar,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Avatar, Box, ListItem, Stack, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { IMessage } from "../../types";
 import { useSelector } from "react-redux";

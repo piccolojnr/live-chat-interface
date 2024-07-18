@@ -15,8 +15,6 @@ import SearchTabs from "./common/search-tabs";
 import Iconify from "../components/iconify";
 import AcountPopover from "./common/account-popover";
 import { useSocket } from "../context/SocketContext";
-import { useEffect, useState } from "react";
-import OnlineUsersCount from "../components/online-users-count";
 
 export default function Sidebar({
   openSidebar,

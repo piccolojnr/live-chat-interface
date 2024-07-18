@@ -27,7 +27,6 @@ export default function InputFileUpload({
   file,
   placeholder,
 }: InputFileUploadProps) {
-  const [selected, setSelectedImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files ? e.target.files[0] : null;

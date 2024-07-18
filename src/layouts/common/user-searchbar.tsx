@@ -27,6 +27,7 @@ export default function UserSearchbar() {
         });
     };
     fetchUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
 
   const handleUserClick = (user: IUser) => {

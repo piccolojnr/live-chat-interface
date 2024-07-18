@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import { useResponsive } from "../hooks/use-responsive";
-import { HEADER, SIDEBAR } from "./config-layout";
+import { SIDEBAR } from "./config-layout";
 
 export default function Main({ children }: { children: React.ReactNode }) {
   const mdUp = useResponsive("up", "md");
