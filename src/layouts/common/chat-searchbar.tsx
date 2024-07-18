@@ -4,24 +4,30 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import Searchbar from "../../components/searchbar";
 import ChatItem from "../../components/chat-item";
-import { getChats } from "../../store/chat-slice";
+import { useLocation } from "react-router-dom";
+import { requestChats } from "../../lib/api/chat";
+import { setChats } from "../../store/chat-slice";
 
 export default function ChatSearchbar() {
   const [query, setQuery] = useState("");
   const chats = useSelector((state: RootState) => state.chat.chats);
   const dispatch = useDispatch<AppDispatch>();
+  const user = useSelector((state: RootState) => state.user.userInfo);
+  const location = useLocation();
 
   useEffect(() => {
     const fetchUsers = async () => {
-      dispatch(getChats({ query }))
-        .unwrap()
+      requestChats(query)
+        .then((response) => {
+          dispatch(setChats(response));
+        })
         .catch((error) => {
           console.error("Error fetching chats:", error);
         });
     };
     fetchUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query]);
+  }, [query, location.pathname, user]);
 
   const renderChatList = (
     <Stack

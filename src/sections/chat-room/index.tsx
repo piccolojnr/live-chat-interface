@@ -2,11 +2,12 @@ import React, { useEffect } from "react";
 import { Box } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
-import { getChatMessages } from "../../store/chat-slice";
+import { setMessages } from "../../store/chat-slice";
 import ChatMessageList from "./chat-message-list";
 import ChatInput from "./chat-input";
 import ChatHeader from "../../components/chat-header";
 import { useSocket } from "../../context/SocketContext";
+import { requestChatMessages } from "../../lib/api/chat";
 
 const ChatRoom: React.FC<{ activeChatId: string }> = ({ activeChatId }) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -14,8 +15,10 @@ const ChatRoom: React.FC<{ activeChatId: string }> = ({ activeChatId }) => {
 
   useEffect(() => {
     const fetchMessages = async () => {
-      dispatch(getChatMessages({ chatId: activeChatId }))
-        .unwrap()
+      requestChatMessages(activeChatId)
+        .then((messages) => {
+          dispatch(setMessages(messages));
+        })
         .catch((error) => {
           console.error("Error fetching messages:", error);
         });

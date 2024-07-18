@@ -4,10 +4,8 @@ import { styled } from "@mui/system";
 import { grey } from "@mui/material/colors";
 import { primary } from "../../theme/palette";
 import { TextareaAutosize as BaseTextareaAutosize } from "@mui/base/TextareaAutosize";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store";
-import { sendMessage } from "../../store/chat-slice";
 import { useSocket } from "../../context/SocketContext";
+import { requestSendMessage } from "../../lib/api/chat";
 
 const Textarea = styled(BaseTextareaAutosize)(
   ({ theme }) => `
@@ -47,17 +45,16 @@ const Textarea = styled(BaseTextareaAutosize)(
 const ChatInput: React.FC<{ activeChatId: string }> = ({ activeChatId }) => {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useState<string>("");
-  const dispatch = useDispatch<AppDispatch>();
   const { sendMessage: sM } = useSocket();
 
   const handleSendMessage = async (event: React.FormEvent) => {
     event.preventDefault();
     if (message.trim() === "") return;
 
-    dispatch(sendMessage({ chatId: activeChatId, message }))
-      .unwrap()
+    requestSendMessage(activeChatId, message)
       .then(() => {
         setMessage("");
+
         sM(activeChatId, message);
         inputRef.current?.focus();
       })
@@ -81,8 +78,7 @@ const ChatInput: React.FC<{ activeChatId: string }> = ({ activeChatId }) => {
       sx={{
         width: "100%",
         position: "absolute",
-        bottom: -20,
-        "&:focus-within": { bottom: 0 },
+        bottom: 0,
         transition: "bottom 0.3s ease",
       }}
     >

@@ -2,37 +2,42 @@ import { useEffect, useState } from "react";
 import { Box, Toolbar, Typography, Stack } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
-import { setActiveChat, addChat, createChat } from "../../store/chat-slice";
+import { setActiveChat, addChat } from "../../store/chat-slice";
 import Searchbar from "../../components/searchbar";
 import UserItem from "../../components/user-item";
 import { IUser } from "../../types";
-import { useNavigate } from "react-router-dom";
-import { getUsers } from "../../store/user-slice";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useLayout } from "..";
+import { getUsersRequest } from "../../lib/api/user";
+import { setUsers } from "../../store/user-slice";
+import { requestCreateChat } from "../../lib/api/chat";
 
 export default function UserSearchbar() {
   const [query, setQuery] = useState("");
   const users = useSelector((state: RootState) => state.user.allUsers);
+  const user = useSelector((state: RootState) => state.user.userInfo);
   const { hideSidebar: onCloseSidebar } = useLayout();
 
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchUsers = async () => {
-      dispatch(getUsers(query))
-        .unwrap()
+      getUsersRequest(query)
+        .then((response) => {
+          dispatch(setUsers(response));
+        })
         .catch((error) => {
           console.error("Error fetching users:", error);
         });
     };
     fetchUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query]);
+  }, [query, location.pathname, user]);
 
   const handleUserClick = (user: IUser) => {
-    dispatch(createChat({ participants: [user.username] }))
-      .unwrap()
+    requestCreateChat([user.username])
       .then((data) => {
         console.log("Chat created:", data);
         dispatch(setActiveChat(data.id));

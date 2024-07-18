@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
-import { RootState, AppDispatch } from "../../store";
-import { register } from "../../store/user-slice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { AppDispatch } from "../../store";
+import { login } from "../../store/user-slice";
 import {
   TextField,
   Typography,
@@ -22,6 +22,7 @@ import { bgGradient } from "../../theme/css";
 import { useTheme } from "../../theme";
 import Logo from "../../components/logo";
 import RouterLink from "../../routes/components/router-link";
+import { registerRequest } from "../../lib/api/user";
 
 const validatePhone = (phone: string) => {
   if (!/^\d{10}$/.test(phone)) {
@@ -50,8 +51,7 @@ const validateUsername = (username: string) => {
 const Signup: React.FC = () => {
   const { theme } = useTheme();
   const dispatch = useDispatch<AppDispatch>();
-
-  const { isAuthenticated } = useSelector((state: RootState) => state.user);
+  const navigate = useNavigate();
   const [username, setUsername] = useState<string>("");
   const [countryCode, setCountryCode] = useState<string>("+233");
   const [phone, setPhone] = useState<string>("");
@@ -122,18 +122,13 @@ const Signup: React.FC = () => {
 
     setLoading(true);
     try {
-      await dispatch(
-        register({
-          username,
-          password,
-          phone: countryCode + phone,
-          bio: null,
-          profilePicture: null,
-        })
-      )
-        .unwrap()
+      const number = phone ? `${countryCode + phone}` : "";
+
+      await registerRequest(username, password, number)
         .then((data) => {
           localStorage.setItem("token", data.token);
+          dispatch(login(data));
+          navigate("/profile", { replace: true });
         })
         .catch((error) => {
           console.error("Error signing up:", error);
@@ -144,10 +139,6 @@ const Signup: React.FC = () => {
       setLoading(false);
     }
   };
-
-  if (isAuthenticated) {
-    return <Navigate to="/profile" />;
-  }
 
   const renderForm = (
     <form noValidate autoComplete="off" onSubmit={handleSignup}>

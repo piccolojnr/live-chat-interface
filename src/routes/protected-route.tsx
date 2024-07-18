@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store";
-import { fetchUser } from "../store/user-slice";
 import { useNavigate } from "react-router-dom";
 import Loading from "../components/loading";
+import { userRequest } from "../lib/api/user";
+import { setUser } from "../store/user-slice";
 
 export default function ProtectedRoute({
   children,
@@ -18,15 +19,13 @@ export default function ProtectedRoute({
 
   useEffect(() => {
     if (!isAuthenticated) {
-      dispatch(fetchUser())
+      userRequest()
         .then((response) => {
-          if (fetchUser.rejected.match(response)) {
-            localStorage.removeItem("token"); // Clear token from local storage
-            navigate("/login"); // Redirect to login page if authentication fails
-          }
+          dispatch(setUser(response));
         })
         .catch((error) => {
           console.error("Error fetching user:", error);
+          navigate("/login");
         });
     }
   }, [isAuthenticated, dispatch, navigate]);

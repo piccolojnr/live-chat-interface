@@ -13,19 +13,8 @@ import Iconify from "../../components/iconify";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../store/user-slice";
 import { useLayout } from "..";
-
-const MENU_OPTIONS = [
-  {
-    label: "Profile",
-    icon: "eva:person-fill",
-    path: "/profile",
-  },
-  {
-    label: "Settings",
-    icon: "eva:settings-2-fill",
-    path: "#",
-  },
-];
+import { logoutRequest } from "../../lib/api/user";
+import { setActiveChat } from "../../store/chat-slice";
 
 export default function AcountPopover() {
   const [open, setOpen] = useState(null);
@@ -39,15 +28,22 @@ export default function AcountPopover() {
   };
 
   const handleClose = (e: any, path: string) => {
-    if (path !== "#" && MENU_OPTIONS.find((option) => option.path === path)) {
-      onCloseSidebar();
-      navigate(path);
-    }
     setOpen(null);
   };
 
   const handleLogout = async () => {
-    dispatch(logout()).catch((err) => console.error(err));
+    logoutRequest()
+      .then(() => {
+        dispatch(logout());
+        navigate("/login");
+      })
+      .catch((err) => console.error(err));
+  };
+  const handleProfile = () => {
+    dispatch(setActiveChat(null));
+    setOpen(null);
+    onCloseSidebar();
+    navigate("/profile");
   };
   return (
     <>
@@ -81,14 +77,7 @@ export default function AcountPopover() {
 
         <Divider sx={{ borderStyle: "dashed" }} />
 
-        {MENU_OPTIONS.map((option) => (
-          <MenuItem
-            key={option.label}
-            onClick={(e) => handleClose(e, option.path)}
-          >
-            {option.label}
-          </MenuItem>
-        ))}
+        <MenuItem onClick={handleProfile}>Profile</MenuItem>
 
         <Divider sx={{ borderStyle: "dashed", m: 0 }} />
 

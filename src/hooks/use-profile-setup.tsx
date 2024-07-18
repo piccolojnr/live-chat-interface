@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { IUser } from "../types";
 import { AppDispatch } from "../store";
-import { API } from "../lib/api";
 import { updateProfile } from "../store/user-slice";
+import API from "../lib/api";
 
 export const useProfileSetup = (
   user: IUser | null,

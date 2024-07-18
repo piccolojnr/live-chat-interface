@@ -1,24 +1,21 @@
-import { API } from "."
+import API from ".";
 
-
-export const createChat = async (participants: string[]) => {
+export const requestCreateChat = async (participants: string[]) => {
     const response = await API.post('/chat', { participants });
     return response.data;
-}
+};
 
-
-export const getChats = async (query: string = "") => {
+export const requestChats = async (query = "") => {
     const response = await API.get(`/chat?query=${query}`);
     return response.data;
-}
+};
 
-export const getChatMessages = async (chatId: string) => {
+export const requestChatMessages = async (chatId: string) => {
     const response = await API.get(`/chat/${chatId}/messages`);
     return response.data;
-}
+};
 
-
-export const sendMessage = async (chatId: string, message: string) => {
+export const requestSendMessage = async (chatId: string, message: string) => {
     const response = await API.post(`/chat/${chatId}/messages`, { message });
     return response.data;
-}
+};

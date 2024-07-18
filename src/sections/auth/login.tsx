@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
-import { RootState, AppDispatch } from "../../store";
-import { login } from "../../store/user-slice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { AppDispatch } from "../../store";
 import {
   TextField,
   Typography,
@@ -23,11 +22,13 @@ import { bgGradient } from "../../theme/css";
 import { useTheme } from "../../theme";
 import Logo from "../../components/logo";
 import RouterLink from "../../routes/components/router-link";
+import { loginRequest } from "../../lib/api/user";
+import { login } from "../../store/user-slice";
 
 const Login: React.FC = () => {
   const { theme } = useTheme();
   const dispatch = useDispatch<AppDispatch>();
-  const { isAuthenticated } = useSelector((state: RootState) => state.user);
+  const navigate = useNavigate();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [rememberMe, setRememberMe] = useState<boolean>(false);
@@ -54,9 +55,11 @@ const Login: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await dispatch(login({ username, password, rememberMe }))
-      .unwrap()
+    await loginRequest(username, password, rememberMe)
       .then((data) => {
+        dispatch(login(data));
+        localStorage.setItem("token", data.token);
+        navigate("/profile");
         setError({ ...error, submit: null });
       })
       .catch((error) => {
@@ -65,9 +68,6 @@ const Login: React.FC = () => {
     setLoading(false);
   };
 
-  if (isAuthenticated) {
-    return <Navigate to="/" />;
-  }
   const renderForm = (
     <form noValidate autoComplete="off" onSubmit={handleLogin}>
       <Stack spacing={3}>
