@@ -6,6 +6,7 @@ import {
     sendMessage as requestSendMessage
 
 } from '../lib/api/chat';
+import { AppThunk } from '.';
 interface ChatState {
     activeChatId: string | null;
     chats: IChat[];
@@ -59,6 +60,14 @@ export const sendMessage = createAsyncThunk('chat/sendMessage', async ({ chatId,
         return thunkAPI.rejectWithValue(error.message || 'An error occurred');
     }
 });
+
+export const joinRooms = (rooms: string[]): AppThunk => (dispatch, getState, { socket }) => {
+    socket.emit('joinRoom', rooms, (error: string) => {
+        if (error) {
+            console.log(error);
+        }
+    });
+};
 
 
 const chatSlice = createSlice({

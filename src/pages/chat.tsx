@@ -20,26 +20,26 @@ export default function ChatPage() {
   useEffect(() => {
     if (params.id) {
       dispatch(setActiveChat(params.id));
-      joinRoom(params.id);
+      //   joinRoom(params.id);
 
-      // Attach message listener only once
-      const handleMessage = (msg: string) => {
-        const message = JSON.parse(base64ToAscii(msg));
-        dispatch(addMessage(message));
-      };
+      //   // Attach message listener only once
+      //   const handleMessage = (msg: string) => {
+      //     const message = JSON.parse(base64ToAscii(msg));
+      //     dispatch(addMessage(message));
+      //   };
 
-      if (socket) {
-        socket.on("message", handleMessage);
-      }
+      //   if (socket) {
+      //     socket.on("message", handleMessage);
+      //   }
+      // }
+      // return () => {
+      //   if (params.id) {
+      //     leaveRoom(params.id);
+      //     if (socket) {
+      //       socket.off("message");
+      //     }
+      //   }
     }
-    return () => {
-      if (params.id) {
-        leaveRoom(params.id);
-        if (socket) {
-          socket.off("message");
-        }
-      }
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id, dispatch, socket]);
 

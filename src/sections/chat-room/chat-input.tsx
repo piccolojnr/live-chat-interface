@@ -58,7 +58,7 @@ const ChatInput: React.FC<{ activeChatId: string }> = ({ activeChatId }) => {
       .unwrap()
       .then(() => {
         setMessage("");
-        sM(activeChatId);
+        sM(activeChatId, message);
         inputRef.current?.focus();
       })
       .catch((error) => {
