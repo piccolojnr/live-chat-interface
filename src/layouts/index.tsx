@@ -36,8 +36,6 @@ export const LayoutProvider: React.FC<{ children: React.ReactNode }> = ({
         showSidebar,
       }}
     >
-      <Notification />
-
       <Box
         sx={{
           minHeight: 1,
@@ -48,6 +46,7 @@ export const LayoutProvider: React.FC<{ children: React.ReactNode }> = ({
         <Sidebar openSidebar={openSidebar} onCloseSidebar={hideSidebar} />
         <Main>{children}</Main>
       </Box>
+      <Notification />
     </LayoutContext.Provider>
   );
 };

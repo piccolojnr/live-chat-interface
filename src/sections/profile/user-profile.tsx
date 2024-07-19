@@ -8,22 +8,17 @@ import {
   Container,
   Paper,
 } from "@mui/material";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store";
-import { getUser } from "../../utils/functions";
-import { useSocket } from "../../context/SocketContext";
 import { IUser } from "../../types";
-import ChatHeader from "../chat/chat-header";
+import ChatHeader from "../../components/chat-header";
+import { useSelector } from "react-redux";
+import { isOnline } from "../../store/user-slice";
 
 interface ChatProfileProps {
   user: IUser;
 }
 
 const UserProfile: React.FC<ChatProfileProps> = ({ user }) => {
-  if (!user) {
-    return null;
-  }
-
+  const online = useSelector(isOnline(user._id));
   return (
     <Container>
       <ChatHeader user={user} />
@@ -46,8 +41,8 @@ const UserProfile: React.FC<ChatProfileProps> = ({ user }) => {
               {user.username}
             </Typography>
             <Chip
-              label={true ? "Online" : "Offline"}
-              color={true ? "success" : "default"}
+              label={online ? "Online" : "Offline"}
+              color={online ? "success" : "default"}
               size="medium"
             />
           </Stack>

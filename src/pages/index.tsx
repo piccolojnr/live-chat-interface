@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet-async";
-import EmptyChat from "../sections/chat-room/empty-chat";
+import EmptyChat from "../sections/chat/empty-chat";
 
 export default function MainPage() {
   return (

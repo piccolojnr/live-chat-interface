@@ -1,3 +1,4 @@
+import { Message } from "../store/user-slice";
 
 export interface IMessage {
     _id: string;
@@ -19,8 +20,8 @@ export interface IChat {
 export interface IUser {
     _id: string;
     username: string;
-    email: string;
     phone?: string;
     profilePicture?: string;
     bio?: string;
+    lastMessage?: Message;
 }

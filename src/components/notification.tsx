@@ -1,5 +1,3 @@
-// Notification.tsx
-import React from "react";
 import { Snackbar, Alert, AlertTitle } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
@@ -18,7 +16,7 @@ const Notification: React.FC = () => {
   return (
     <Snackbar
       open={Boolean(notification)}
-      autoHideDuration={6000}
+      autoHideDuration={4000}
       onClose={handleClose}
       anchorOrigin={{ vertical: "top", horizontal: "right" }}
     >

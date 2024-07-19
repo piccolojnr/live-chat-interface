@@ -6,7 +6,9 @@ import { RootState } from "../../store";
 import { useTheme } from "../../theme";
 import { fDateTime } from "../../utils/format-time";
 
-const ChatBubble: React.FC<IMessage> = ({ message, sender, timestamp }) => {
+const ChatBubble: React.FC<{ message: IMessage }> = ({
+  message: { message, sender, timestamp },
+}) => {
   const { mode } = useTheme();
   const user = useSelector((state: RootState) => state.user.userInfo);
   const [showMore, setShowMore] = useState<boolean>(false);

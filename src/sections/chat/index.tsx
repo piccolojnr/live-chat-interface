@@ -1,8 +1,8 @@
 import { Box } from "@mui/material";
 import { IUser } from "../../types";
-import ChatHeader from "./chat-header";
 import ChatMessageList from "./chat-message-list";
 import ChatInput from "./chat-input";
+import ChatHeader from "../../components/chat-header";
 
 export default function PrivateChat({ user }: { user: IUser }) {
   return (

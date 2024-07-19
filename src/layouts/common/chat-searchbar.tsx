@@ -6,11 +6,10 @@ import Searchbar from "../../components/searchbar";
 import ChatItem from "../../components/chat-item";
 import { useLocation } from "react-router-dom";
 import { requestChats } from "../../lib/api/chat";
-import { setChats } from "../../store/chat-slice";
 
 export default function ChatSearchbar() {
   const [query, setQuery] = useState("");
-  const chats = useSelector((state: RootState) => state.chat.chats);
+  // const chats = useSelector((state: RootState) => state.user.chats);
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user.userInfo);
   const location = useLocation();
@@ -19,7 +18,7 @@ export default function ChatSearchbar() {
     const fetchUsers = async () => {
       requestChats(query)
         .then((response) => {
-          dispatch(setChats(response));
+          // dispatch(setChats(response));
         })
         .catch((error) => {
           console.error("Error fetching chats:", error);
@@ -36,9 +35,9 @@ export default function ChatSearchbar() {
         px: 2,
       }}
     >
-      {chats.map((chat, index) => (
+      {/* {chats.map((chat, index) => (
         <ChatItem key={index} chat={chat} />
-      ))}
+      ))} */}
     </Stack>
   );
 

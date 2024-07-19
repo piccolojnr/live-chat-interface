@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
 type NotiType = "error" | "success" | "info";
 
 type Notification = {
@@ -12,10 +11,7 @@ interface NotificationState {
 }
 
 const initialState: NotificationState = {
-  notification: {
-    message: "Welcome to the chat app",
-    type: "info",
-  },
+  notification: null,
 };
 
 const notificationSlice = createSlice({

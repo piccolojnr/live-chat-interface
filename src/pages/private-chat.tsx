@@ -5,13 +5,14 @@ import { useEffect, useState } from "react";
 import { useSocket } from "../context/SocketContext";
 import { RootState } from "../store";
 import { getUserRequest } from "../lib/api/user";
-import { setActiveUser } from "../store/user-slice";
 import Loading from "../components/loading";
 import PrivateChat from "../sections/chat";
+import { setActiveUser, setMessages } from "../store/user-slice";
+import { requestGetMessages } from "../lib/api/message";
 
 export default function PrivateChatPage() {
   const params = useParams();
-  const { socket, getMessages } = useSocket();
+  const { socket } = useSocket();
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user.activeUser);
   const account = useSelector((state: RootState) => state.user.userInfo);
@@ -23,8 +24,15 @@ export default function PrivateChatPage() {
       getUserRequest(params.id)
         .then((response) => {
           dispatch(setActiveUser(response));
-          if (params.id && socket && account)
-            getMessages(params.id, account?._id);
+          if (params.id && socket && account) {
+            requestGetMessages(params.id)
+              .then((response) => {
+                dispatch(setMessages(response));
+              })
+              .catch((error) => {
+                console.error("Error fetching messages:", error);
+              });
+          }
         })
         .catch((error) => {
           console.error("Error fetching user:", error);
@@ -33,6 +41,7 @@ export default function PrivateChatPage() {
           setLoading(false);
         });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id, socket]);
 
   return (
@@ -49,7 +58,7 @@ export default function PrivateChatPage() {
         user.constructor === Object ? (
         <PrivateChat user={user} />
       ) : (
-        <h1> No user found </h1>
+        <h1>No user found </h1>
       )}
     </>
   );

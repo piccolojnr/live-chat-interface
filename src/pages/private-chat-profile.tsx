@@ -30,6 +30,7 @@ export default function PrivateChatProfilePage() {
           setLoading(false);
         });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id, socket]);
 
   return (

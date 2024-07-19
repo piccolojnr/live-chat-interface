@@ -1,33 +1,28 @@
-import { createListenerMiddleware } from '@reduxjs/toolkit';
-import { addMessage, updateMessages } from './chat-slice';
-import { RootState } from '.';
-import { updateLastMessage } from './user-slice';
+import { createListenerMiddleware } from "@reduxjs/toolkit";
+import { RootState } from ".";
+import { addMessage } from "./user-slice";
+import { showNotification } from "./notification-slice";
+
 
 const listenerMiddleware = createListenerMiddleware();
 
 listenerMiddleware.startListening({
     actionCreator: addMessage,
-    effect: async (action, listenerApi) => {
-        const state = listenerApi.getState() as RootState;
-        const activeUser = state.user.activeUser;
-        console.log('message', action.payload);
-        if (activeUser) {
-            listenerApi.dispatch(updateLastMessage({ message: action.payload }));
+    effect: async (action, listenerAPI) => {
+        const state = listenerAPI.getState() as RootState;
+        const message = action.payload;
+
+
+        if (state.user.activeUser && state.user.userInfo && (state.user.activeUser._id === action.payload.sender || state.user.userInfo._id === action.payload.sender)) {
+            return;
         }
+        listenerAPI.dispatch(
+            showNotification({
+                type: "info",
+                message: "You have a new message from " + message.username,
+            })
+        );
     },
-});
+})
 
-listenerMiddleware.startListening({
-    actionCreator: updateMessages,
-    effect: async (action, listenerApi) => {
-        const state = listenerApi.getState() as RootState;
-        const activeUser = state.user.activeUser;
-        console.log('message', action.payload);
-
-        if (activeUser) {
-            activeUser.lastMessage = action.payload[-1];
-        }
-    },
-});
-
-export default listenerMiddleware;
+export default listenerMiddleware

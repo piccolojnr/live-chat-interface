@@ -82,6 +82,20 @@ function UserItem({
         >
           {user.username}
         </Typography>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{
+            fontSize: 12,
+            display: "-webkit-box",
+            overflow: "hidden",
+            WebkitBoxOrient: "vertical",
+            WebkitLineClamp: 2,
+          }}
+          lineHeight={1.25}
+        >
+          {user.lastMessage?.message}
+        </Typography>
       </Box>
     </ListItemButton>
   );
