@@ -9,6 +9,7 @@ import Loading from "../components/loading";
 import PrivateChat from "../sections/chat";
 import { setActiveUser, setMessages } from "../store/user-slice";
 import { requestGetMessages } from "../lib/api/message";
+import { base64ToAscii } from "../utils/functions";
 
 export default function PrivateChatPage() {
   const params = useParams();
@@ -27,7 +28,11 @@ export default function PrivateChatPage() {
           if (params.id && socket && account) {
             requestGetMessages(params.id)
               .then((response) => {
-                dispatch(setMessages(response));
+                const parsedMessages: any = [];
+                response.forEach((msg: string) => {
+                  parsedMessages.push(JSON.parse(base64ToAscii(msg)));
+                });
+                dispatch(setMessages(parsedMessages));
               })
               .catch((error) => {
                 console.error("Error fetching messages:", error);

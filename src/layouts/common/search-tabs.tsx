@@ -56,19 +56,9 @@ export default function SearchTabs() {
           }
           {...a11yProps(0)}
         />
-        <Tab
-          sx={{ width: "50%" }}
-          label={
-            <Iconify icon="lets-icons:chat-fill" style={{ fontSize: "24px" }} />
-          }
-          {...a11yProps(1)}
-        />
       </Tabs>
       <TabPanel value={value} index={0}>
         <UserSearchbar />
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        {/* <ChatSearchbar /> */}
       </TabPanel>
     </Box>
   );
