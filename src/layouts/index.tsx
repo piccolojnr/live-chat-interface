@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 import Main from "./main";
 import Sidebar from "./Sidebar";
 import { createContext, useContext, useState } from "react";
+import Notification from "../components/notification";
 
 interface LayoutContextProps {
   showSidebar: () => void;
@@ -45,6 +46,7 @@ export const LayoutProvider: React.FC<{ children: React.ReactNode }> = ({
         <Sidebar openSidebar={openSidebar} onCloseSidebar={hideSidebar} />
         <Main>{children}</Main>
       </Box>
+      <Notification />
     </LayoutContext.Provider>
   );
 };

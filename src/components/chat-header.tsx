@@ -9,39 +9,33 @@ import {
 } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../store";
-import { setActiveChat } from "../store/chat-slice";
+import { AppDispatch } from "../store";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useLayout } from "../layouts";
-import Iconify from "./iconify";
+import Iconify from "../components/iconify";
 import { useTheme } from "../theme";
-import { getAvatar, getUser } from "../utils/functions";
 import RouterLink from "../routes/components/router-link";
+import { IUser } from "../types";
+import { setActiveUser } from "../store/user-slice";
+import { isOnline } from "../store/user-slice";
 
 const ChatHeader: React.FC<{
-  onlineUser?: string[];
-}> = ({ onlineUser = [] }) => {
+  user?: IUser;
+}> = ({ user }) => {
   const { theme } = useTheme();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { showSidebar: onOpenSidebar } = useLayout();
-  const account = useSelector((state: RootState) => state.user.userInfo);
-  const chat = useSelector((state: RootState) =>
-    state.chat.chats.find((chat) => chat._id === state.chat.activeChatId)
-  );
-  const user = chat && getUser(chat, account);
-
-  const avatar = chat && getAvatar(chat, user);
+  const { showSidebar } = useLayout();
   const location = useLocation();
+  const online = useSelector(isOnline(user?._id));
 
   const handleBackClick = () => {
-    dispatch(setActiveChat(null));
-    // if location ends with /profile, navigate to /chat/activeChatId
     if (location.pathname.endsWith("/profile")) {
-      navigate(`/chat/${chat?._id}`);
+      navigate(`/private-chat/${user?._id}`);
       return;
     }
-    navigate("/chat");
+    dispatch(setActiveUser(null));
+    navigate("/");
   };
 
   return (
@@ -56,7 +50,7 @@ const ChatHeader: React.FC<{
         borderBottom: "1px solid #e0e0e0",
       }}
     >
-      <IconButton onClick={onOpenSidebar} sx={{ display: { md: "none" } }}>
+      <IconButton onClick={showSidebar} sx={{ display: { md: "none" } }}>
         <Iconify
           icon="bi:justify-left"
           sx={{ color: theme.palette.text.primary }}
@@ -66,7 +60,7 @@ const ChatHeader: React.FC<{
         onClick={handleBackClick}
         edge="start"
         color="inherit"
-        sx={{ display: chat ? "flex" : "none" }}
+        sx={{ display: user ? "flex" : "none" }}
       >
         <ArrowBack />
       </IconButton>
@@ -77,11 +71,11 @@ const ChatHeader: React.FC<{
         sx={{ flexGrow: 1 }}
       >
         <Typography variant="h6" component="div" sx={{ textAlign: "center" }}>
-          {user?.username || chat?.name}
+          {user?.username}
         </Typography>
         <Chip
-          label={onlineUser.includes(user?._id || "") ? "Online" : "Offline"}
-          color={onlineUser.includes(user?._id || "") ? "success" : "default"}
+          label={online ? "Online" : "Offline"}
+          color={online ? "success" : "default"}
           size="small"
           sx={{
             display: user ? "flex" : "none",
@@ -94,12 +88,12 @@ const ChatHeader: React.FC<{
       <Box sx={{ width: "40px" }} />
       <Box
         component={RouterLink}
-        href={`/chat/${chat?._id}/profile`}
+        href={`/private-chat/${user?._id}/profile`}
         sx={{
           width: 24,
           height: 24,
           mr: 2,
-          display: chat ? "block" : "none",
+          display: user ? "block" : "none",
         }}
       >
         <Avatar
@@ -108,7 +102,7 @@ const ChatHeader: React.FC<{
             height: 30,
             mr: 2,
           }}
-          src={avatar}
+          src={user?.profilePicture}
           alt="photoUrl"
         />
       </Box>

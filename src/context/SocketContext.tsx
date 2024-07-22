@@ -1,25 +1,30 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { BASE_API_URL } from "../lib/constants";
+import { base64ToAscii } from "../utils/functions";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../store";
+import { updateOnlineUsers } from "../store/user-slice";
+import { addMessage, setMessages } from "../store/user-slice";
 
 // Define the context type
 interface SocketContextType {
   socket: Socket | null;
   isConnected: boolean;
-  onlineUsers: string[];
   joinRoom: (roomId: string) => void;
   leaveRoom: (roomId: string) => void;
-  sendMessage: (roomId: string, message: string) => void;
+  emitMessage: (to: string, from: string, message: string) => void;
+  getMessages: (to: string, from: string) => void;
 }
 
 // Create the initial context with default values
 const SocketContext = createContext<SocketContextType>({
   socket: null,
   isConnected: false,
-  onlineUsers: [],
   joinRoom: () => {},
   leaveRoom: () => {},
-  sendMessage: () => {},
+  emitMessage: () => {},
+  getMessages: () => {},
 });
 
 // Custom hook to use the socket context
@@ -30,7 +35,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
-  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     const newSocket = io(BASE_API_URL, {
@@ -51,16 +56,37 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
       console.log(error);
     };
 
-    const handleRoomNotification = (data: any) => {
-      setOnlineUsers(data.users);
-    };
-    const handleUserDisconnected = (data: any) => {
-      setOnlineUsers((prev) => prev.filter((id) => id !== data));
-      console.log(`${data} disconnected`);
-    };
-    newSocket.on("userDisconnected", handleUserDisconnected);
-    newSocket.on("roomNotification", handleRoomNotification);
+    const handleMessage = (msg: string) => {
+      const message: {
+        key: string;
+        sender: string;
+        username: string;
+        message: string;
+        timestamp: string;
+      } = JSON.parse(base64ToAscii(msg));
 
+      dispatch(addMessage(message));
+    };
+
+    const handleGetMessages = (messages: string[]) => {
+      const parsedMessages: any = [];
+      messages.forEach((msg) => {
+        parsedMessages.push(JSON.parse(base64ToAscii(msg)));
+      });
+      dispatch(setMessages(parsedMessages));
+    };
+
+    const handleUserList = (data: {
+      users: string[];
+      type: "update" | "delete";
+      userId: string;
+    }) => {
+      dispatch(updateOnlineUsers(data.users));
+    };
+
+    newSocket.on("userList", handleUserList);
+    newSocket.on("message", handleMessage);
+    newSocket.on("messages", handleGetMessages);
     newSocket.on("connect", handleConnect);
     newSocket.on("disconnect", handleDisconnect);
     newSocket.on("error", handleError);
@@ -68,13 +94,15 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
     setSocket(newSocket);
 
     return () => {
-      newSocket.off("userDisconnected", handleUserDisconnected);
-      newSocket.off("roomNotification", handleRoomNotification);
+      newSocket.off("userList", handleUserList);
+      newSocket.off("message", handleMessage);
+      newSocket.off("messages", handleGetMessages);
       newSocket.off("connect", handleConnect);
       newSocket.off("disconnect", handleDisconnect);
       newSocket.off("error", handleError);
       newSocket.disconnect();
     };
+    // eslint-disable-next-line
   }, []);
 
   const joinRoom = (roomId: string) => {
@@ -85,8 +113,12 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
     socket?.emit("leaveRoom", roomId);
   };
 
-  const sendMessage = (roomId: string, message: string) => {
-    socket?.emit("send-message", {roomId, message});
+  const emitMessage = (to: string, from: string, message: string) => {
+    socket?.emit("send-message", { to, from, message });
+  };
+
+  const getMessages = (to: string, from: string) => {
+    socket?.emit("get-messages", { to, from });
   };
 
   return (
@@ -94,10 +126,10 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
       value={{
         socket,
         isConnected,
-        onlineUsers,
         joinRoom,
         leaveRoom,
-        sendMessage,
+        emitMessage,
+        getMessages,
       }}
     >
       {children}

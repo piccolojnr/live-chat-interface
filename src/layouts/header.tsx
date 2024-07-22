@@ -14,7 +14,6 @@ import { useResponsive } from "../hooks/use-responsive";
 import Iconify from "../components/iconify";
 import { useLocation, useParams } from "react-router-dom";
 import RouterLink from "../routes/components/router-link";
-import ChatAvatar from "./common/chat-avatar";
 
 function Header({ onOpenSidebar }: { onOpenSidebar: () => void }) {
   const { theme } = useTheme();
@@ -80,7 +79,7 @@ function Header({ onOpenSidebar }: { onOpenSidebar: () => void }) {
           <Box sx={{ flexGrow: 1 }} />
           <Stack direction="row" alignItems="center" spacing={1}>
             <ThemeToggleButton />
-            <ChatAvatar />
+            {/* <ChatAvatar /> */}
           </Stack>
         </Toolbar>
       </AppBar>

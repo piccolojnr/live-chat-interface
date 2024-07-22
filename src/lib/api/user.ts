@@ -32,6 +32,11 @@ export const userRequest = async () => {
     return response.data;
 };
 
+export const getUserRequest = async (id: string) => {
+    const response = await API.get(`/user/${id}/user`);
+    return response.data;
+}
+
 export const getUsersRequest = async (query = "") => {
     const response = await API.get(`/user?query=${query}`);
     return response.data;

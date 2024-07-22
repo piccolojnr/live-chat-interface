@@ -4,7 +4,7 @@ import { AppDispatch, RootState } from "../store";
 import { useNavigate } from "react-router-dom";
 import Loading from "../components/loading";
 import { userRequest } from "../lib/api/user";
-import { setUser } from "../store/user-slice";
+import { login } from "../store/user-slice";
 
 export default function ProtectedRoute({
   children,
@@ -18,21 +18,19 @@ export default function ProtectedRoute({
   );
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      userRequest()
-        .then((response) => {
-          dispatch(setUser(response));
-        })
-        .catch((error) => {
-          console.error("Error fetching user:", error);
-          navigate("/login");
-        });
-    }
+    userRequest()
+      .then((response) => {
+        dispatch(login(response));
+      })
+      .catch((error) => {
+        console.error("Error fetching user:", error);
+        navigate("/login");
+      });
   }, [isAuthenticated, dispatch, navigate]);
 
   // Optionally add a loading state
   if (!isAuthenticated && !userInfo) {
-    return <Loading />; // Or a spinner component
+    return <Loading />;
   }
 
   return <>{children}</>;

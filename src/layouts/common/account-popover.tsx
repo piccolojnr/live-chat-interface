@@ -11,10 +11,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import Iconify from "../../components/iconify";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../../store/user-slice";
+import { logout, setActiveUser } from "../../store/user-slice";
 import { useLayout } from "..";
 import { logoutRequest } from "../../lib/api/user";
-import { setActiveChat } from "../../store/chat-slice";
 
 export default function AcountPopover() {
   const [open, setOpen] = useState(null);
@@ -40,7 +39,7 @@ export default function AcountPopover() {
       .catch((err) => console.error(err));
   };
   const handleProfile = () => {
-    dispatch(setActiveChat(null));
+    dispatch(setActiveUser(null));
     onCloseSidebar();
     navigate("/profile");
     handleClose();
@@ -69,9 +68,6 @@ export default function AcountPopover() {
         <Box sx={{ my: 1.5, px: 2 }}>
           <Typography variant="subtitle2" noWrap>
             {account?.username}
-          </Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
-            {account?.email}
           </Typography>
         </Box>
 

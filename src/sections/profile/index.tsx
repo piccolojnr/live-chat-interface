@@ -47,9 +47,6 @@ const Profile: React.FC<ProfileProps> = ({ user }) => {
             <Typography variant="h5" component="div" sx={{ mb: 1 }}>
               {user.username}
             </Typography>
-            <Typography variant="body2" color="textSecondary" component="p">
-              {user.email}
-            </Typography>
             {user.bio && (
               <Typography variant="body2" color="textSecondary" component="p">
                 {user.bio}
