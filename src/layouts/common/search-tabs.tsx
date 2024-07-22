@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Box, Tabs, Tab } from "@mui/material";
-import ChatSearchbar from "./chat-searchbar"; // Ensure you have a ChatSearchbar component
 import UserSearchbar from "./user-searchbar";
 import Iconify from "../../components/iconify";
 
