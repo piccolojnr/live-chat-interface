@@ -126,35 +126,17 @@ const Login: React.FC = () => {
           </Link>
         </Stack>
 
-        <LoadingButton
-          fullWidth
-          size="large"
-          type="submit"
-          variant="contained"
-          disabled={loading}
-          loading={loading}
-        >
-          Login
-        </LoadingButton>
-
-        <Stack direction="row" alignItems="center" justifyContent="center">
-          <Typography
-            variant="subtitle2"
-            sx={{
-              mt: 2,
-            }}
-          >
-            Don't have an account?{" "}
-            <Link
-              variant="subtitle2"
-              underline="hover"
-              component={RouterLink}
-              href="/signup"
-            >
-              Register
-            </Link>
-          </Typography>
-        </Stack>
+      <LoadingButton
+        fullWidth
+        size="large"
+        type="submit"
+        variant="contained"
+        color="inherit"
+        disabled={loading}
+        loading={loading}
+      >
+        Login
+      </LoadingButton>
 
         <Stack direction="row" alignItems="center" justifyContent="center">
           <Typography
